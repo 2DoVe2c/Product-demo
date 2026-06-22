@@ -495,7 +495,6 @@ body {
     <div class="restart-right">
       <h2 id="restartTitle">正在应用新配置并重启…</h2>
       <div class="applied">
-        <div class="label">已成功应用配置方案</div>
         <div class="val" id="appliedPlan">方案 1 · 官方推荐（官方算法）</div>
       </div>
       <div class="substep" id="restartStep">⏳ 正在写入兼容层参数…</div>
@@ -586,7 +585,8 @@ function goRestart(){
   setTimeout(()=>step.textContent='🔄 正在重新启动游戏…',1200);
   setTimeout(()=>{
     spin.style.display='none'; ring.style.display='flex';
-    title.style.display='none';
+    title.style.display='block';
+    title.textContent='已成功应用配置方案';
     step.style.display='none';
   },2600);
 }
