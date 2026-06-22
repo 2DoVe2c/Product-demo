@@ -322,7 +322,6 @@ body {
         <div class="loading-title"><span class="spinner"></span> 游戏启动中…</div>
         <div class="loading-game">艾尔登法环 · ELDEN RING</div>
         <div class="progress"><i></i></div>
-        <div class="loading-timer" id="timer">已等待 5 分 12 秒</div>
         <div class="loading-tip">正在加载游戏组件 长时间未进入游戏将为您提供引导</div>
       </div>
     </div>
@@ -527,9 +526,6 @@ const sceneData = {
   ]
 };
 
-let timerSec = 312, timerItv = null;
-function fmt(sec){ return '已等待 '+Math.floor(sec/60)+' 分 '+String(sec%60).padStart(2,'0')+' 秒'; }
-
 function showMask(){ document.getElementById('mask').classList.add('show'); }
 function hideMask(){ document.getElementById('mask').classList.remove('show'); }
 function setTab(id){
@@ -542,17 +538,10 @@ function goLoading(){
   closeAllSheets(); hideMask();
   document.getElementById('loadingWrap').style.display='flex';
   document.getElementById('restartWrap').classList.remove('show');
-  startTimer();
-}
-function startTimer(){
-  clearInterval(timerItv);
-  document.getElementById('timer').textContent=fmt(timerSec);
-  timerItv = setInterval(()=>{ timerSec++; document.getElementById('timer').textContent=fmt(timerSec); },1000);
 }
 
 function goDiagnose(){
   setTab('t2');
-  clearInterval(timerItv);
   closeAllSubs();
   document.getElementById('restartWrap').classList.remove('show');
   document.getElementById('loadingWrap').style.display='flex';
@@ -616,8 +605,6 @@ function toast(msg){
   const t=document.getElementById('toast'); t.innerHTML=msg; t.classList.add('show');
   clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600);
 }
-
-startTimer();
 </script>
 </body>
 </html>
