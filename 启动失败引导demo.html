@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>兼容性治理 · 启动失败引导 Demo（横屏单栏）</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg-primary: #000000;
+  --bg-card: #1a1a1a;
+  --bg-elevated: #252525;
+  --bg-overlay: #28202a;
+  --text-primary: #ffffff;
+  --text-secondary: #e6e6e6;
+  --text-tertiary: #f2f2f2;
+  --text-muted: #7b7b7b;
+  --text-disabled: #646464;
+  --brand-gold: #ffcc43;
+  --brand-gold-light: #ffd98f;
+  --brand-green: #33d8a4;
+  --brand-blue: #338feb;
+  --brand-purple: #8174fa;
+  --border-default: #353d4e;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 100px;
+  --font-primary: 'MiSans VF', 'MiSans', 'PingFang SC', -apple-system, sans-serif;
+  --font-number: 'D-DIN-PRO', var(--font-primary);
+}
+body {
+  font-family: var(--font-primary);
+  background: #0c0c0e;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 16px 60px; gap: 20px;
+}
+
+.page-title { text-align:center; }
+.page-title h1 { font-size:22px; font-weight:600; }
+.page-title p { font-size:13px; color:var(--text-muted); margin-top:6px; }
+
+.stepbar { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+.stepbar button {
+  font-family:var(--font-primary); font-size:13px; color:var(--text-secondary);
+  background:var(--bg-card); border:1px solid var(--border-default);
+  border-radius:var(--radius-full); padding:9px 16px; cursor:pointer; transition:all .2s;
+}
+.stepbar button:hover { border-color:var(--brand-gold); color:var(--brand-gold); }
+.stepbar button.active { background:var(--brand-gold); color:#1a1a1a; border-color:var(--brand-gold); font-weight:600; }
+
+/* 横屏容器 874×402 */
+.phone {
+  width:874px; height:402px; background:var(--bg-primary);
+  border-radius:28px; overflow:hidden; position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.6); border:1px solid #1f1f22;
+}
+.topbar {
+  position:absolute; top:0; left:0; right:0; height:34px; z-index:6;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px 0 18px; font-size:12px;
+}
+.topbar .left { display:flex; align-items:center; gap:10px; color:var(--text-secondary); }
+.topbar .back { font-size:15px; cursor:pointer; }
+.topbar .right { display:flex; gap:8px; align-items:center; font-size:12px; font-family:var(--font-number); color:var(--text-secondary); }
+
+.game-stage { position:absolute; inset:0; }
+.game-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(129,116,250,.22), transparent 45%),
+    radial-gradient(circle at 78% 65%, rgba(51,143,235,.18), transparent 50%),
+    linear-gradient(135deg, #1a1320 0%, #0a0a0c 55%, #000 100%);
+}
+
+/* 启动 loading */
+.loading-wrap {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  gap:36px; text-align:left; padding:0 60px;
+}
+.game-cover {
+  width:90px; height:90px; border-radius:var(--radius-xl); flex-shrink:0;
+  background:linear-gradient(135deg,#8174fa,#673fb8); display:flex;
+  align-items:center; justify-content:center; font-size:42px;
+  box-shadow:0 8px 24px rgba(129,116,250,.4);
+}
+.loading-info { display:flex; flex-direction:column; gap:12px; max-width:420px; }
+.loading-title { font-size:18px; font-weight:600; display:flex; align-items:center; gap:10px; }
+.loading-game { font-size:14px; color:var(--text-secondary); }
+.loading-tip { font-size:12px; color:var(--text-muted); line-height:1.6; }
+.loading-timer {
+  font-family:var(--font-number); font-size:13px; color:var(--brand-gold);
+  background:rgba(255,204,67,.1); padding:5px 14px; border-radius:var(--radius-full); align-self:flex-start;
+}
+.progress { width:280px; height:4px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
+.progress i { display:block; height:100%; width:42%; background:linear-gradient(90deg,#ffcc43,#ffd98f); border-radius:2px;
+  animation:load 2.6s ease-in-out infinite; }
+@keyframes load { 0%{width:18%} 50%{width:70%} 100%{width:42%} }
+.spinner { width:38px; height:38px; border:3px solid rgba(255,255,255,.15);
+  border-top-color:var(--brand-gold); border-radius:50%; animation:spin .9s linear infinite; flex-shrink:0; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* 蒙层 */
+.mask {
+  position:absolute; inset:0; background:rgba(0,0,0,.6);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  z-index:10; display:none;
+}
+.mask.show { display:block; animation:fade .25s ease; }
+@keyframes fade { from{opacity:0} to{opacity:1} }
+
+/* 单栏弹窗：居中、窄、可滚动 */
+.sheet {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-46%) scale(.96);
+  width:380px; max-height:374px; z-index:11; opacity:0; pointer-events:none;
+  background:linear-gradient(180deg,#2b2830 0%,#1c1a20 100%);
+  border-radius:var(--radius-2xl); box-shadow:0 12px 40px rgba(0,0,0,.6);
+  border:1px solid rgba(255,255,255,.06);
+  transition:all .3s cubic-bezier(.32,.72,0,1); overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.sheet.show { opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); }
+.close-x {
+  position:absolute; top:13px; right:14px; width:25px; height:25px; border-radius:50%;
+  background:rgba(255,255,255,.08); color:var(--text-secondary); border:none; font-size:13px;
+  cursor:pointer; z-index:3; transition:all .2s;
+}
+.close-x:hover { background:rgba(255,255,255,.16); }
+
+/* 头部（固定） */
+.sheet-head { padding:13px 16px 10px; border-bottom:1px solid rgba(255,255,255,.06); }
+.diag-head { display:flex; align-items:center; gap:10px; }
+.diag-icon {
+  width:34px; height:34px; border-radius:50%; flex-shrink:0;
+  background:rgba(255,86,120,.12); display:flex; align-items:center; justify-content:center; font-size:18px;
+}
+.diag-head h2 { font-size:15px; font-weight:600; }
+.diag-head p { font-size:11px; color:var(--text-muted); margin-top:2px; line-height:1.4; }
+.diag-game-tag {
+  display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+  background:var(--bg-elevated); border:1px solid var(--border-default);
+  border-radius:var(--radius-full); padding:4px 10px; font-size:10px; color:var(--text-secondary);
+}
+
+/* 主体（滚动） */
+.sheet-body { flex:1; overflow-y:auto; padding:11px 16px; }
+.sheet-body::-webkit-scrollbar { display:none; }
+
+.sec-title {
+  display:flex; align-items:center; gap:6px; margin:0 0 8px;
+  font-size:12px; font-weight:600; color:var(--text-secondary);
+}
+.sec-title.mt { margin-top:13px; }
+.sec-title .more { font-weight:400; font-size:10px; color:var(--text-muted); margin-left:auto; }
+.sec-title .q {
+  width:15px; height:15px; border-radius:50%; background:var(--bg-elevated);
+  border:1px solid var(--border-default); color:var(--text-muted);
+  font-size:10px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s;
+}
+.sec-title .q:hover { color:var(--brand-gold); border-color:var(--brand-gold); }
+
+/* 方案卡片：短窄、无灰色提示 */
+.plan {
+  background:var(--bg-card); border:1.5px solid var(--border-default);
+  border-radius:var(--radius-md); padding:8px 10px; margin-bottom:6px; cursor:pointer; transition:all .2s;
+}
+.plan:hover { border-color:#5a5560; }
+.plan.selected { border-color:var(--brand-gold); background:rgba(255,204,67,.06); }
+.plan-top { display:flex; align-items:center; justify-content:space-between; }
+.plan-name { font-size:13px; font-weight:600; display:flex; align-items:center; gap:7px; }
+.badge { font-size:10px; padding:2px 7px; border-radius:var(--radius-sm); font-weight:500; }
+.badge.official { background:rgba(51,143,235,.18); color:#7fc1ff; }
+.badge.community { background:rgba(129,116,250,.18); color:#b3a9ff; }
+.badge.hot { background:rgba(255,86,120,.15); color:#ff8aa0; }
+.plan-radio { width:18px; height:18px; border-radius:50%; border:2px solid var(--border-default); flex-shrink:0; position:relative; }
+.plan.selected .plan-radio { border-color:var(--brand-gold); }
+.plan.selected .plan-radio::after { content:''; position:absolute; inset:3px; border-radius:50%; background:var(--brand-gold); }
+.plan-meta { display:flex; gap:14px; margin-top:7px; }
+.plan-meta div { display:flex; flex-direction:column; gap:1px; }
+.plan-meta .k { font-size:10px; color:var(--text-muted); white-space:nowrap; }
+.plan-meta .v { font-family:var(--font-number); font-size:13px; font-weight:600; color:var(--brand-green); }
+.plan-meta .v.gold { color:var(--brand-gold); }
+
+.scene-row { display:flex; gap:6px; }
+.scene {
+  flex:1; background:var(--bg-card); border:1px solid var(--border-default);
+  border-radius:var(--radius-md); padding:8px 4px; text-align:center; cursor:pointer; transition:all .2s;
+}
+.scene:hover { border-color:var(--brand-gold); background:rgba(255,204,67,.05); }
+.scene .emo { font-size:17px; }
+.scene .t { font-size:12px; font-weight:500; margin-top:3px; }
+.scene .d { font-size:9px; color:var(--text-muted); margin-top:2px; }
+
+.tutorial-row { display:flex; gap:6px; }
+.tutorial {
+  flex:1; display:flex; align-items:center; gap:8px;
+  background:var(--bg-card); border:1px solid var(--border-default);
+  border-radius:var(--radius-md); padding:8px 10px; cursor:pointer; transition:all .2s;
+}
+.tutorial:hover { border-color:#5a5560; }
+.tutorial .ic { width:28px; height:28px; border-radius:var(--radius-sm); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:14px; }
+.tutorial .ic.video { background:linear-gradient(135deg,#ff5678,#e03b25); }
+.tutorial .ic.doc { background:linear-gradient(135deg,#338feb,#0063b5); }
+.tutorial .tt { font-size:12px; font-weight:500; }
+.tutorial .td { font-size:9px; color:var(--text-muted); margin-top:1px; }
+
+.report-card {
+  background:linear-gradient(135deg, rgba(51,216,164,.08), rgba(51,143,235,.06));
+  border:1px solid var(--border-default); border-radius:var(--radius-md); padding:10px;
+}
+.report-card .rt { font-size:12px; font-weight:600; }
+.report-card .rd { font-size:10px; color:var(--text-muted); margin-top:5px; line-height:1.5; }
+.report-info { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+.report-info span { font-size:9px; color:var(--text-secondary); background:rgba(255,255,255,.06);
+  padding:3px 8px; border-radius:var(--radius-sm); font-family:var(--font-number); }
+.btn-report {
+  width:100%; margin-top:9px; background:rgba(51,216,164,.14); color:var(--brand-green);
+  border:1px solid rgba(51,216,164,.3); border-radius:var(--radius-md);
+  font-size:12px; font-weight:600; padding:8px; cursor:pointer; transition:all .2s; font-family:var(--font-primary);
+}
+.btn-report:hover { background:rgba(51,216,164,.22); }
+
+/* 底部操作（固定） */
+.sheet-foot {
+  padding:11px 16px; border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(28,26,32,.5); display:flex; gap:8px;
+}
+.btn {
+  border:none; border-radius:var(--radius-md); font-family:var(--font-primary);
+  font-size:13px; font-weight:600; padding:10px 14px; cursor:pointer; transition:all .2s;
+}
+.btn-primary { background:linear-gradient(135deg,#ffcc43,#ffb600); color:#1a1a1a; flex:1; }
+.btn-primary:hover { filter:brightness(1.05); }
+.btn-primary:active { transform:scale(.99); }
+.btn-ghost { background:transparent; color:var(--text-secondary); border:1px solid var(--border-default); padding-left:18px; padding-right:18px; }
+.btn-ghost:hover { border-color:#5a5560; color:var(--text-primary); }
+
+/* 二级弹窗 */
+.subsheet {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-46%) scale(.96);
+  width:480px; max-height:350px; z-index:14; opacity:0; pointer-events:none;
+  background:linear-gradient(180deg,#2b2830,#1c1a20); border-radius:var(--radius-xl);
+  box-shadow:0 12px 40px rgba(0,0,0,.6); border:1px solid rgba(255,255,255,.07);
+  padding:20px 22px; overflow-y:auto; transition:all .28s cubic-bezier(.32,.72,0,1);
+}
+.subsheet::-webkit-scrollbar { display:none; }
+.subsheet.show { opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); }
+.subsheet h3 { font-size:16px; font-weight:600; margin-bottom:4px; }
+.subsheet .sd { font-size:12px; color:var(--text-muted); margin-bottom:14px; }
+.param-item { display:flex; gap:11px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+.param-num { width:20px; height:20px; border-radius:50%; background:var(--brand-gold); color:#1a1a1a;
+  font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.param-text .pn { font-size:13px; font-weight:500; }
+.param-text .pv { font-size:11px; color:var(--brand-green); margin-top:2px; }
+.param-text .pd { font-size:10px; color:var(--text-muted); margin-top:2px; line-height:1.5; }
+.sub-foot { display:flex; gap:9px; margin-top:16px; }
+
+/* 重启反馈 */
+.restart-wrap {
+  position:absolute; inset:0; z-index:20; display:none;
+  flex-direction:row; align-items:center; justify-content:center; gap:40px;
+  padding:0 70px; background:linear-gradient(135deg,#101018,#000);
+}
+.restart-wrap.show { display:flex; }
+.restart-left { display:flex; flex-direction:column; align-items:center; gap:18px; }
+.success-ring {
+  width:74px; height:74px; border-radius:50%; background:rgba(51,216,164,.12);
+  display:flex; align-items:center; justify-content:center; font-size:36px; border:2px solid var(--brand-green);
+}
+.restart-right { display:flex; flex-direction:column; gap:14px; max-width:360px; }
+.restart-right h2 { font-size:20px; font-weight:600; }
+.applied { background:var(--bg-card); border:1px solid var(--border-default); border-radius:var(--radius-lg); padding:13px 16px; }
+.applied .label { font-size:11px; color:var(--text-muted); }
+.applied .val { font-size:15px; font-weight:600; color:var(--brand-gold); margin-top:4px; }
+.substep { font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; }
+
+.toast {
+  position:absolute; top:48px; left:50%; transform:translateX(-50%) translateY(-20px);
+  background:rgba(28,26,32,.96); border:1px solid var(--border-default);
+  color:var(--text-primary); font-size:12px; padding:11px 18px; border-radius:var(--radius-md);
+  z-index:40; opacity:0; transition:all .3s; pointer-events:none; box-shadow:0 8px 24px rgba(0,0,0,.5);
+  display:flex; align-items:center; gap:8px; max-width:600px;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.hint { font-size:12px; color:var(--text-muted); text-align:center; max-width:874px; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>兼容性治理 · 启动失败引导</h1>
+  <p>盖世游戏 APP · 横屏游戏场景 · 单栏弹窗 · 高保真交互 Demo</p>
+</div>
+
+<div class="stepbar">
+  <button id="t1" class="active" onclick="goLoading()">① 启动检测中（满 5 分钟触发）</button>
+  <button id="t2" onclick="goDiagnose()">② 启动失败引导弹窗</button>
+  <button id="t3" onclick="goRestart()">③ 切换配置·重启反馈</button>
+</div>
+
+<div class="phone">
+  <!-- 顶部 HUD -->
+  <div class="topbar">
+    <div class="left"><span class="back" onclick="goLoading()">‹</span><span>艾尔登法环</span></div>
+    <div class="right"><span>21:30</span><span>📶</span><span>🔋 86%</span></div>
+  </div>
+
+  <!-- 游戏画面 -->
+  <div class="game-stage">
+    <div class="game-bg"></div>
+    <!-- 状态①：启动 loading -->
+    <div class="loading-wrap" id="loadingWrap">
+      <div class="game-cover">🎮</div>
+      <div class="loading-info">
+        <div class="loading-title"><span class="spinner"></span> 游戏启动中…</div>
+        <div class="loading-game">艾尔登法环 · ELDEN RING</div>
+        <div class="progress"><i></i></div>
+        <div class="loading-timer" id="timer">已等待 5 分 12 秒</div>
+        <div class="loading-tip">正在加载游戏组件 长时间未进入游戏将为您提供引导</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 蒙层 -->
+  <div class="mask" id="mask" onclick="closeAll()"></div>
+
+  <!-- 状态②：单栏引导弹窗 -->
+  <div class="sheet" id="diagSheet">
+    <button class="close-x" onclick="closeAll()">✕</button>
+
+    <!-- 头部 -->
+    <div class="sheet-head">
+      <div class="diag-head">
+        <div class="diag-icon">⚠️</div>
+        <div>
+          <h2>检测到游戏启动异常</h2>
+          <p>已等待 <b style="color:var(--brand-gold)">5 分 12 秒</b> 仍未进入游戏画面，可能是配置与机型不适配</p>
+        </div>
+      </div>
+      <div class="diag-game-tag">🎮 艾尔登法环 · 当前机型 Redmi K70 Pro</div>
+    </div>
+
+    <!-- 滚动主体 -->
+    <div class="sheet-body">
+      <!-- 推荐配置方案 -->
+      <div class="sec-title">
+        推荐配置方案
+        <span class="q" onclick="openSub('smartTip')">?</span>
+        <span class="more">选择后一键重启</span>
+      </div>
+
+      <div class="plan selected" data-plan="1" onclick="selectPlan(this)">
+        <div class="plan-top">
+          <div class="plan-name">方案 1 · 官方推荐 <span class="badge official">官方算法</span></div>
+          <div class="plan-radio"></div>
+        </div>
+        <div class="plan-meta">
+          <div><span class="k">同机型通过率</span><span class="v">92%</span></div>
+          <div><span class="k">应用人数</span><span class="v">1.2 万</span></div>
+          <div><span class="k">平均帧率</span><span class="v gold">58 FPS</span></div>
+          <div><span class="k">稳定时长</span><span class="v">＞2 小时</span></div>
+        </div>
+      </div>
+
+      <div class="plan" data-plan="2" onclick="selectPlan(this)">
+        <div class="plan-top">
+          <div class="plan-name">方案 2 · 玩家分享 <span class="badge community">同处理器</span></div>
+          <div class="plan-radio"></div>
+        </div>
+        <div class="plan-meta">
+          <div><span class="k">同机型通过率</span><span class="v">88%</span></div>
+          <div><span class="k">应用人数</span><span class="v">3,142</span></div>
+          <div><span class="k">平均帧率</span><span class="v gold">52 FPS</span></div>
+          <div><span class="k">稳定时长</span><span class="v">约 1 小时</span></div>
+        </div>
+      </div>
+
+      <div class="plan" data-plan="3" onclick="selectPlan(this)">
+        <div class="plan-top">
+          <div class="plan-name">方案 3 · 极致兼容 <span class="badge hot">保证启动</span></div>
+          <div class="plan-radio"></div>
+        </div>
+        <div class="plan-meta">
+          <div><span class="k">同机型通过率</span><span class="v">97%</span></div>
+          <div><span class="k">应用人数</span><span class="v">8,756</span></div>
+          <div><span class="k">平均帧率</span><span class="v gold">40 FPS</span></div>
+          <div><span class="k">稳定时长</span><span class="v">＞3 小时</span></div>
+        </div>
+      </div>
+
+      <!-- 按现象自助排查 -->
+      <div class="sec-title mt">
+        按现象自助排查
+        <span class="q" onclick="openSub('sceneTip')">?</span>
+      </div>
+      <div class="scene-row">
+        <div class="scene" onclick="openScene('黑屏')"><div class="emo">⬛</div><div class="t">黑屏</div><div class="d">有声无画面</div></div>
+        <div class="scene" onclick="openScene('花屏')"><div class="emo">🌈</div><div class="t">花屏</div><div class="d">画面错乱</div></div>
+        <div class="scene" onclick="openScene('闪退')"><div class="emo">💥</div><div class="t">闪退</div><div class="d">启动即退</div></div>
+      </div>
+
+      <!-- 教程 -->
+      <div class="sec-title mt">图文 / 视频教程</div>
+      <div class="tutorial-row">
+        <div class="tutorial" onclick="toast('▶️ 打开视频教程：3 分钟搞定启动')">
+          <div class="ic video">▶️</div><div><div class="tt">视频教程</div><div class="td">3 分钟搞定</div></div>
+        </div>
+        <div class="tutorial" onclick="toast('📖 打开图文教程：配置项逐条详解')">
+          <div class="ic doc">📖</div><div><div class="tt">图文教程</div><div class="td">配置项详解</div></div>
+        </div>
+      </div>
+
+      <!-- 兜底上报 -->
+      <div class="sec-title mt">还是不行？一键上报</div>
+      <div class="report-card">
+        <div class="rt">🛟 上报给官方适配团队</div>
+        <div class="rd">以上方案都无法启动时，把机型和游戏信息一键上报，官方针对性排查并下发适配方案。</div>
+        <div class="report-info">
+          <span>机型 Redmi K70 Pro</span>
+          <span>芯片 骁龙8 Gen3</span>
+          <span>游戏ID #1245620</span>
+          <span>内核 6.0.2</span>
+        </div>
+        <button class="btn-report" onclick="reportSubmit()">一键上报问题 · 交给官方排查</button>
+      </div>
+    </div>
+
+    <!-- 底部固定操作 -->
+    <div class="sheet-foot">
+      <button class="btn btn-primary" onclick="goRestart()">应用方案 1 · 切换并重启</button>
+      <button class="btn btn-ghost" onclick="toast('⚙️ 跳转到 PC 引擎设置页')">手动调整</button>
+    </div>
+  </div>
+
+  <!-- 二级：场景说明 -->
+  <div class="subsheet" id="sceneSheet">
+    <h3 id="sceneTitle">黑屏 · 排查指引</h3>
+    <div class="sd">通常只需调整下面 2~3 个关键项，逐项尝试即可</div>
+    <div id="sceneParams"></div>
+    <div class="sub-foot"><button class="btn btn-ghost" style="flex:1" onclick="closeSub('sceneSheet')">返回</button></div>
+  </div>
+
+  <!-- 二级：推荐配置说明 -->
+  <div class="subsheet" id="smartTip">
+    <h3>推荐配置来源</h3>
+    <div class="sd">官方智能方案 + 同处理器玩家分享，双重数据保障</div>
+    <div class="param-item"><div class="param-num">1</div><div class="param-text">
+      <div class="pn">官方算法方案</div>
+      <div class="pd">采集同机型用户成功启动的配置，需达到稳定运行时长与帧率门槛后才会被推荐，并持续验证成功率。</div></div></div>
+    <div class="param-item"><div class="param-num">2</div><div class="param-text">
+      <div class="pn">同处理器玩家分享</div>
+      <div class="pd">与你相同处理器的玩家调试成功后上报的配置，命中率高、贴近真实机型表现。</div></div></div>
+    <div class="sub-foot"><button class="btn btn-ghost" style="flex:1" onclick="closeSub('smartTip')">我知道了</button></div>
+  </div>
+
+  <!-- 二级：按现象排查说明 -->
+  <div class="subsheet" id="sceneTip">
+    <h3>按异常现象排查</h3>
+    <div class="sd">根据出现异常现象，调整相关参数</div>
+    <div class="param-item"><div class="param-num">✓</div><div class="param-text">
+      <div class="pn">几十个配置项里，真正影响启动的通常只有 2~4 个</div>
+      <div class="pd">按照黑屏 / 花屏 / 闪退调整对应参数，不必摸索全部选项</div></div></div>
+    <div class="sub-foot"><button class="btn btn-ghost" style="flex:1" onclick="closeSub('sceneTip')">我知道了</button></div>
+  </div>
+
+  <!-- 二级：手动调整（跳转 PC 模拟器设置页） -->
+  <div class="subsheet" id="configPage">
+    <h3>PC 模拟器设置页 · 手动调整</h3>
+    <div class="sd">标 ⭐ 为关键项，每项均有说明（点「?」查看）</div>
+    <div class="param-item"><div class="param-num">⭐</div><div class="param-text">
+      <div class="pn">图形渲染后端</div><div class="pv">当前：Vulkan ＞ 可选 OpenGL / DX11</div><div class="pd">黑屏时优先切换此项</div></div></div>
+    <div class="param-item"><div class="param-num">⭐</div><div class="param-text">
+      <div class="pn">显存分配</div><div class="pv">当前：4096 MB</div><div class="pd">花屏 / 贴图错乱时调整</div></div></div>
+    <div class="param-item"><div class="param-num">⭐</div><div class="param-text">
+      <div class="pn">CPU 转译模式</div><div class="pv">当前：动态重编译</div><div class="pd">闪退时尝试切换为兼容模式</div></div></div>
+    <div class="sub-foot">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeSub('configPage')">返回</button>
+      <button class="btn btn-primary" onclick="closeSub('configPage');goRestart()">保存并重启</button>
+    </div>
+  </div>
+
+  <!-- 状态③：重启反馈 -->
+  <div class="restart-wrap" id="restartWrap">
+    <div class="restart-left">
+      <div class="spinner" id="restartSpin" style="width:64px;height:64px;border-width:4px"></div>
+      <div class="success-ring" id="successRing" style="display:none">✓</div>
+    </div>
+    <div class="restart-right">
+      <h2 id="restartTitle">正在应用新配置并重启…</h2>
+      <div class="applied">
+        <div class="label">已成功应用配置方案</div>
+        <div class="val" id="appliedPlan">方案 1 · 官方推荐（官方算法）</div>
+      </div>
+      <div class="substep" id="restartStep">⏳ 正在写入兼容层参数…</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<div class="hint">
+  点击顶部 ① ② ③ 切换状态 · 启动满 5 分钟未进入游戏才触发检测弹窗 · 单栏弹窗内含：推荐方案 / 自助排查 / 教程 / 上报，向下滚动查看全部 · 「?」查看说明
+</div>
+
+<script>
+const sceneData = {
+  '黑屏': [
+    {n:1, pn:'切换图形渲染后端', pv:'Vulkan → OpenGL', pd:'黑屏多为渲染后端不兼容，优先尝试切换'},
+    {n:2, pn:'关闭硬件加速解码', pv:'开 → 关', pd:'部分机型 GPU 解码异常导致只有声音无画面'},
+    {n:3, pn:'降低分辨率缩放', pv:'100% → 80%', pd:'显存不足时降低缩放可恢复画面'}
+  ],
+  '花屏': [
+    {n:1, pn:'提高显存分配', pv:'2048 → 4096 MB', pd:'花屏 / 贴图错乱通常是显存不足'},
+    {n:2, pn:'关闭异步着色器编译', pv:'开 → 关', pd:'画面撕裂时关闭可消除错乱'},
+    {n:3, pn:'切换纹理过滤精度', pv:'高 → 中', pd:'降低精度换取画面稳定'}
+  ],
+  '闪退': [
+    {n:1, pn:'切换 CPU 转译模式', pv:'动态重编译 → 兼容模式', pd:'启动即退出多为转译不兼容'},
+    {n:2, pn:'关闭多线程渲染', pv:'开 → 关', pd:'部分游戏多线程下崩溃'},
+    {n:3, pn:'清理游戏缓存后重启', pv:'执行清理', pd:'损坏缓存会导致反复闪退'}
+  ]
+};
+
+let timerSec = 312, timerItv = null;
+function fmt(sec){ return '已等待 '+Math.floor(sec/60)+' 分 '+String(sec%60).padStart(2,'0')+' 秒'; }
+
+function showMask(){ document.getElementById('mask').classList.add('show'); }
+function hideMask(){ document.getElementById('mask').classList.remove('show'); }
+function setTab(id){
+  ['t1','t2','t3'].forEach(t=>document.getElementById(t).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goLoading(){
+  setTab('t1');
+  closeAllSheets(); hideMask();
+  document.getElementById('loadingWrap').style.display='flex';
+  document.getElementById('restartWrap').classList.remove('show');
+  startTimer();
+}
+function startTimer(){
+  clearInterval(timerItv);
+  document.getElementById('timer').textContent=fmt(timerSec);
+  timerItv = setInterval(()=>{ timerSec++; document.getElementById('timer').textContent=fmt(timerSec); },1000);
+}
+
+function goDiagnose(){
+  setTab('t2');
+  clearInterval(timerItv);
+  closeAllSubs();
+  document.getElementById('restartWrap').classList.remove('show');
+  document.getElementById('loadingWrap').style.display='flex';
+  showMask();
+  setTimeout(()=>document.getElementById('diagSheet').classList.add('show'),20);
+}
+
+function selectPlan(el){
+  document.querySelectorAll('.plan').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  const map={'1':'方案 1 · 官方推荐（官方算法）','2':'方案 2 · 玩家分享（同处理器）','3':'方案 3 · 极致兼容（最稳）'};
+  const n=el.dataset.plan;
+  document.querySelector('.sheet-foot .btn-primary').textContent='应用方案 '+n+' · 切换并重启';
+  document.getElementById('appliedPlan').textContent=map[n];
+}
+
+function goRestart(){
+  setTab('t3');
+  closeAllSheets(); hideMask();
+  document.getElementById('loadingWrap').style.display='none';
+  const spin=document.getElementById('restartSpin');
+  const ring=document.getElementById('successRing');
+  const title=document.getElementById('restartTitle');
+  const step=document.getElementById('restartStep');
+  spin.style.display='block'; ring.style.display='none';
+  step.style.display='flex'; title.style.display='block';
+  title.textContent='正在应用新配置并重启…';
+  step.textContent='⏳ 正在写入兼容层参数…';
+  document.getElementById('restartWrap').classList.add('show');
+  setTimeout(()=>step.textContent='🔄 正在重新启动游戏…',1200);
+  setTimeout(()=>{
+    spin.style.display='none'; ring.style.display='flex';
+    title.style.display='none';
+    step.style.display='none';
+  },2600);
+}
+
+function openScene(name){
+  document.getElementById('sceneTitle').textContent=name+' · 排查指引';
+  const box=document.getElementById('sceneParams'); box.innerHTML='';
+  sceneData[name].forEach(p=>{
+    box.innerHTML+=`<div class="param-item"><div class="param-num">${p.n}</div>
+      <div class="param-text"><div class="pn">${p.pn}</div>
+      <div class="pv">${p.pv}</div><div class="pd">${p.pd}</div></div></div>`;
+  });
+  openSub('sceneSheet');
+}
+
+function openSub(id){ document.getElementById(id).classList.add('show'); }
+function closeSub(id){ document.getElementById(id).classList.remove('show'); }
+function closeAllSubs(){ ['sceneSheet','smartTip','sceneTip','configPage'].forEach(id=>document.getElementById(id).classList.remove('show')); }
+function closeAllSheets(){ document.getElementById('diagSheet').classList.remove('show'); closeAllSubs(); }
+function closeAll(){
+  hideMask(); closeAllSheets();
+  if(document.getElementById('t2').classList.contains('active')) goLoading();
+}
+
+function reportSubmit(){ toast('✅ 已上报：Redmi K70 Pro · 游戏ID #1245620，官方将排查并下发适配方案'); }
+function toast(msg){
+  const t=document.getElementById('toast'); t.innerHTML=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+startTimer();
+</script>
+</body>
+</html>
