@@ -625,7 +625,7 @@ body {
         <div class="info-row"><span class="ik">游戏 ID</span><span class="iv">#1245620</span></div>
         <div class="info-row"><span class="ik">内核版本</span><span class="iv">6.0.2</span></div>
         <div class="info-row"><span class="ik">异常类型</span><span class="iv">长时间未进入游戏</span></div>
-        <div class="info-row"><span class="ik">已尝试方案</span><span class="iv">方案 1 · 官方推荐</span></div>
+        <div class="info-row"><span class="ik">已尝试方案</span><span class="iv">方案 1 · 极致兼容</span></div>
       </div>
       <div class="report-desc">上报后官方将在 1~3 个工作日内排查该机型与游戏的适配问题。</div>
     </div>
@@ -713,7 +713,7 @@ function goRestart(){
   const title=document.getElementById('restartTitle');
   const step=document.getElementById('restartStep');
   spin.style.display='block'; ring.style.display='none';
-  step.style.display='flex'; title.style.display='block';
+  step.style.display='flex'; step.style.visibility='visible'; title.style.display='block';
   title.textContent='正在应用新配置并重启…';
   step.textContent='⏳ 正在写入兼容层参数…';
   document.getElementById('restartWrap').classList.add('show');
