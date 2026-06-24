@@ -283,9 +283,8 @@ body {
 }
 .restart-right { display:flex; flex-direction:column; gap:14px; max-width:360px; }
 .restart-right h2 { font-size:20px; font-weight:600; }
-.applied { background:var(--bg-card); border:1px solid var(--border-default); border-radius:var(--radius-lg); padding:13px 16px; }
-.applied .label { font-size:11px; color:var(--text-muted); }
-.applied .val { font-size:15px; font-weight:600; color:var(--brand-gold); margin-top:4px; }
+.applied { background:var(--bg-card); border:1px solid var(--border-default); border-radius:var(--radius-lg); padding:12px 16px; }
+.applied .val { font-size:14px; font-weight:600; color:var(--brand-gold); }
 .substep { font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; }
 
 .toast {
@@ -297,112 +296,79 @@ body {
 }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-/* 第4页：PC模拟器设置面板 */
+/* 第4页：更多菜单浮层 */
 .settings-overlay {
-  position:absolute; inset:0; z-index:9; display:none; flex-direction:column;
-  background:#000;
+  position:absolute; inset:0; z-index:9; display:none;
+  align-items:center; justify-content:center;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(129,116,250,.18), transparent 45%),
+    radial-gradient(circle at 78% 65%, rgba(51,143,235,.15), transparent 50%),
+    linear-gradient(135deg, #1a1320 0%, #0a0a0c 55%, #000 100%);
 }
 .settings-overlay.show { display:flex; }
-.stats-bar {
-  display:flex; align-items:center; gap:1px; justify-content:center;
-  background:#13171e; height:26px; font-size:11px; font-family:var(--font-number);
-  border-bottom:1px solid #2a3040; flex-shrink:0; padding:0 12px; gap:12px;
+.menu-modal {
+  background:rgba(36,40,50,.88); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.1); border-radius:20px;
+  width:480px; padding:20px 24px 24px; box-shadow:0 16px 40px rgba(0,0,0,.5);
 }
-.stat { display:flex; align-items:center; gap:4px; }
-.stat .sk { color:#6b7280; font-size:10px; }
-.stat .sv { font-weight:600; }
-.sv.pink { color:#f472b6; }
-.sv.orange { color:#fb923c; }
-.sv.green { color:#4ade80; }
-.sv.normal { color:#e2e8f0; }
-.stat-sep { width:1px; height:14px; background:#2a3040; }
-.settings-body { flex:1; display:flex; overflow:hidden; }
-.settings-left { /* game area */ flex:0 0 340px; background:#000; position:relative; }
-.ctrl-hint { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-.ctrl-hint span { font-size:11px; color:#2a2f38; }
-.settings-panel { flex:1; display:flex; background:#1c2029; }
-.panel-nav {
-  width:108px; background:#13171e; display:flex; flex-direction:column;
-  padding:12px 8px; gap:4px; border-right:1px solid #2a3040;
+.menu-modal-head {
+  display:flex; align-items:center; justify-content:center; position:relative; margin-bottom:20px;
 }
-.nav-item {
-  display:flex; flex-direction:column; align-items:center; gap:5px;
-  padding:10px 8px; border-radius:10px; cursor:pointer; transition:all .15s;
-  color:#6b7280; font-size:12px;
+.menu-modal-head h3 { font-size:16px; font-weight:600; color:#fff; }
+.menu-close {
+  position:absolute; right:0; top:50%; transform:translateY(-50%);
+  width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,.1);
+  border:none; color:#aaa; font-size:15px; cursor:pointer; display:flex;
+  align-items:center; justify-content:center; transition:all .2s;
 }
-.nav-item:hover { background:#1e2530; color:#c0c8d4; }
-.nav-item.active { background:#252b36; color:#ffffff; }
-.nav-icon { font-size:18px; }
-.nav-sep { flex:1; }
-.panel-content { flex:1; overflow-y:auto; padding:16px 20px; }
-.panel-content::-webkit-scrollbar { display:none; }
-.panel-section-title { font-size:16px; font-weight:600; color:#ffffff; margin-bottom:16px; }
-.setting-row {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 0; border-bottom:1px solid #252b36; min-height:46px;
+.menu-close:hover { background:rgba(255,255,255,.18); color:#fff; }
+.menu-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; }
+.menu-row { display:contents; }
+.menu-divider { grid-column:1/-1; height:1px; background:rgba(255,255,255,.08); margin:4px 0; }
+.menu-item {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding:16px 8px; cursor:pointer; border-radius:12px; transition:all .15s;
 }
-.setting-row:last-child { border-bottom:none; }
-.setting-row .sr-label { font-size:14px; color:#e2e8f0; }
-.setting-row .sr-sub { font-size:11px; color:#6b7280; margin-top:2px; }
-.toggle {
-  width:44px; height:26px; border-radius:13px; position:relative; cursor:pointer;
-  transition:background .2s; flex-shrink:0;
+.menu-item:hover { background:rgba(255,255,255,.07); }
+.menu-item:active { transform:scale(.96); }
+.menu-ic {
+  width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.1);
+  display:flex; align-items:center; justify-content:center; font-size:24px;
+  transition:all .15s;
 }
-.toggle.on { background:#338feb; }
-.toggle.off { background:#3a4050; }
-.toggle::after {
-  content:''; position:absolute; top:3px; width:20px; height:20px;
-  background:#fff; border-radius:50%; transition:left .2s;
-}
-.toggle.on::after { left:21px; }
-.toggle.off::after { left:3px; }
-.dropdown-val {
-  display:flex; align-items:center; gap:6px; color:#6b7280; font-size:13px;
-}
-.dropdown-val svg { opacity:.6; }
-.slider-row { padding:8px 0 14px; }
-.slider-label { display:flex; justify-content:space-between; font-size:14px; color:#e2e8f0; margin-bottom:10px; }
-.slider-val { font-family:var(--font-number); font-weight:600; color:#e2e8f0; }
-.slider-track { position:relative; height:4px; background:#3a4050; border-radius:2px; }
-.slider-fill { height:100%; width:62%; background:#338feb; border-radius:2px; }
-.slider-thumb {
-  position:absolute; top:50%; transform:translateY(-50%); left:62%;
-  width:18px; height:18px; border-radius:50%; background:#fff;
-  box-shadow:0 2px 6px rgba(0,0,0,.4); margin-left:-9px;
-}
-.report-row {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 0; border-bottom:1px solid #252b36; cursor:pointer; transition:all .15s;
-}
-.report-row:hover { opacity:.75; }
-.report-row .sr-label { color:#ff8c69; font-size:14px; display:flex; align-items:center; gap:8px; }
-.report-row-arrow { color:#6b7280; font-size:16px; }
+.menu-item:hover .menu-ic { background:rgba(255,255,255,.16); }
+.menu-ic.report { background:rgba(51,143,235,.2); }
+.menu-item:hover .menu-ic.report { background:rgba(51,143,235,.32); }
+.menu-label { font-size:12px; color:#d0d4dd; text-align:center; }
 .drawer {
-  position:absolute; top:0; right:0; bottom:0; width:534px; z-index:12;
-  background:linear-gradient(180deg,#1c2029,#161a21);
-  border-left:1px solid rgba(255,255,255,.07);
-  box-shadow:-8px 0 24px rgba(0,0,0,.5);
-  transform:translateX(100%); transition:transform .3s cubic-bezier(.32,.72,0,1);
-  display:flex; flex-direction:column; overflow:hidden;
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-46%) scale(.96);
+  width:480px; max-height:320px; z-index:13; opacity:0; pointer-events:none;
+  background:rgba(36,40,50,.88); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.1); border-radius:20px;
+  box-shadow:0 16px 40px rgba(0,0,0,.5);
+  transition:all .28s cubic-bezier(.32,.72,0,1); overflow:hidden;
+  display:flex; flex-direction:column;
 }
-.drawer.show { transform:translateX(0); }
+.drawer.show { opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); }
 .drawer-head {
-  padding:14px 16px 12px; border-bottom:1px solid rgba(255,255,255,.06);
-  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px 12px; border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex; align-items:center; justify-content:center; position:relative; flex-shrink:0;
 }
-.drawer-head h3 { font-size:15px; font-weight:600; }
+.drawer-head h3 { font-size:16px; font-weight:600; }
 .drawer-head .close-btn {
-  width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,.08);
+  position:absolute; right:16px; top:50%; transform:translateY(-50%);
+  width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.1);
   border:none; color:var(--text-secondary); font-size:13px; cursor:pointer; transition:all .2s;
 }
 .drawer-head .close-btn:hover { background:rgba(255,255,255,.16); }
-.drawer-body { flex:1; overflow-y:auto; padding:14px 16px; }
+.drawer-body { flex:1; overflow-y:auto; padding:14px 20px; }
 .drawer-body::-webkit-scrollbar { display:none; }
-.drawer-label { font-size:11px; color:var(--text-muted); margin-bottom:12px; line-height:1.6; }
-.info-grid { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.drawer-label { font-size:11px; color:var(--text-muted); margin-bottom:10px; line-height:1.6; }
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
 .info-row {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:8px 10px; background:var(--bg-card); border:1px solid var(--border-default);
+  display:flex; flex-direction:column; gap:3px;
+  padding:8px 10px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
   border-radius:var(--radius-md);
 }
 .info-row .ik { font-size:10px; color:var(--text-muted); }
@@ -410,8 +376,9 @@ body {
 .report-desc {
   font-size:10px; color:var(--text-muted); line-height:1.6;
   background:rgba(51,216,164,.06); border:1px solid rgba(51,216,164,.15);
-  border-radius:var(--radius-md); padding:10px; margin-bottom:14px;
+  border-radius:var(--radius-md); padding:9px; margin-bottom:12px;
 }
+.drawer-foot { padding:12px 20px; border-top:1px solid rgba(255,255,255,.06); flex-shrink:0; }
 .drawer-foot .btn-primary { background:linear-gradient(135deg,#338feb,#0063b5); color:#fff; }
 
 .hint { font-size:12px; color:var(--text-muted); text-align:center; max-width:874px; line-height:1.7; }
@@ -428,7 +395,7 @@ body {
   <button id="t1" class="active" onclick="goLoading()">① 启动检测中（游戏加载超过3分钟未进入游戏或进入游戏后1分钟内游戏进程被杀掉）</button>
   <button id="t2" onclick="goDiagnose()">② 启动失败引导弹窗</button>
   <button id="t3" onclick="goRestart()">③ 切换配置·重启反馈</button>
-  <button id="t4" onclick="goReport()">④ 一键上报</button>
+  <button id="t4" onclick="goReport()">④ 游戏详情页-一键上报</button>
 </div>
 
 <div class="phone">
@@ -602,76 +569,43 @@ body {
     <div class="restart-right">
       <h2 id="restartTitle">正在应用新配置并重启…</h2>
       <div class="applied">
-        <div class="val" id="appliedPlan">方案 1 · 官方推荐（官方算法）</div>
+        <div class="val" id="appliedPlan">方案 1 · 极致兼容</div>
       </div>
       <div class="substep" id="restartStep">⏳ 正在写入兼容层参数…</div>
     </div>
   </div>
 
-  <!-- 状态④：PC模拟器设置面板 -->
+  <!-- 状态④：更多菜单浮层 -->
   <div class="settings-overlay" id="settingsOverlay">
-    <!-- 顶部性能状态条 -->
-    <div class="stats-bar">
-      <div class="stat"><span class="sv pink">DXVK</span></div>
-      <div class="stat-sep"></div>
-      <div class="stat"><span class="sk">CPU</span><span class="sv normal">70%</span></div>
-      <div class="stat-sep"></div>
-      <div class="stat"><span class="sk">内存</span><span class="sv normal">74%</span></div>
-      <div class="stat-sep"></div>
-      <div class="stat"><span class="sk">功耗</span><span class="sv normal">0.0W</span></div>
-      <div class="stat-sep"></div>
-      <div class="stat"><span class="sk">温度</span><span class="sv orange">57.0°C</span></div>
-      <div class="stat-sep"></div>
-      <div class="stat"><span class="sk">帧率</span><span class="sv green">67</span></div>
-    </div>
-    <div class="settings-body">
-      <!-- 左侧游戏区域（模拟手柄） -->
-      <div class="settings-left">
-        <div class="ctrl-hint"><span>← 游戏画面 / 手柄区域</span></div>
+    <div class="menu-modal">
+      <div class="menu-modal-head">
+        <h3>更多菜单</h3>
       </div>
-      <!-- 右侧设置面板 -->
-      <div class="settings-panel">
-        <!-- 导航栏 -->
-        <div class="panel-nav">
-          <div class="nav-item"><span class="nav-icon">👤</span><span>操作</span></div>
-          <div class="nav-item active"><span class="nav-icon">📊</span><span>性能</span></div>
-          <div class="nav-item"><span class="nav-icon">⚙️</span><span>设置</span></div>
-          <div class="nav-item"><span class="nav-icon">⌨️</span><span>键盘</span></div>
-          <div class="nav-sep"></div>
-          <div class="nav-item"><span class="nav-icon">🚪</span><span>退出</span></div>
+      <div class="menu-grid">
+        <div class="menu-item" onclick="toast('⚙️ 跳转到 PC 引擎设置页')">
+          <div class="menu-ic">⚙️</div><div class="menu-label">PC引擎设置</div>
         </div>
-        <!-- 内容区 -->
-        <div class="panel-content">
-          <div class="panel-section-title">性能</div>
-          <div class="setting-row">
-            <span class="sr-label">显卡直通模式</span>
-            <div class="toggle off"></div>
-          </div>
-          <div class="setting-row">
-            <span class="sr-label">AI超级插帧</span>
-            <div class="dropdown-val">停用 <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 4l4 4 4-4"/></svg></div>
-          </div>
-          <div class="setting-row">
-            <span class="sr-label">开启帧数限制</span>
-            <div class="toggle on"></div>
-          </div>
-          <div class="slider-row">
-            <div class="slider-label"><span>帧数限制</span><span class="slider-val">60 FPS</span></div>
-            <div class="slider-track"><div class="slider-fill"></div><div class="slider-thumb"></div></div>
-          </div>
-          <!-- 一键上报 -->
-          <div class="report-row" onclick="document.getElementById('reportDrawer').classList.add('show')">
-            <span class="sr-label" style="color:#ffffff">一键上报启动异常</span>
-            <span class="report-row-arrow">›</span>
-          </div>
-          <div class="setting-row">
-            <div><div class="sr-label">画质增强</div><div class="sr-sub">个性化的画质增强调节</div></div>
-            <span style="color:#6b7280;font-size:16px">›</span>
-          </div>
-          <div class="setting-row">
-            <span class="sr-label">进程管理</span>
-            <span style="color:#6b7280;font-size:16px">›</span>
-          </div>
+        <div class="menu-item" onclick="toast('🔗 分享')">
+          <div class="menu-ic">🔗</div><div class="menu-label">分享</div>
+        </div>
+        <div class="menu-item" onclick="toast('🖥️ 添加到桌面')">
+          <div class="menu-ic">🖥️</div><div class="menu-label">添加到桌面</div>
+        </div>
+        <div class="menu-item" onclick="toast('🔄 版本切换')">
+          <div class="menu-ic">🔄</div><div class="menu-label">版本切换</div>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" onclick="toast('🗑️ 移除游戏')">
+          <div class="menu-ic">🗑️</div><div class="menu-label">移除游戏</div>
+        </div>
+        <div class="menu-item" onclick="toast('✏️ 修改信息')">
+          <div class="menu-ic">✏️</div><div class="menu-label">修改信息</div>
+        </div>
+        <div class="menu-item" onclick="toast('🎮 按键与布局')">
+          <div class="menu-ic">🎮</div><div class="menu-label">按键与布局</div>
+        </div>
+        <div class="menu-item" onclick="document.getElementById('reportDrawer').classList.add('show')">
+          <div class="menu-ic report">🛟</div><div class="menu-label">一键上报</div>
         </div>
       </div>
     </div>
@@ -764,7 +698,7 @@ function goDiagnose(){
 function selectPlan(el){
   document.querySelectorAll('.plan').forEach(p=>p.classList.remove('selected'));
   el.classList.add('selected');
-  const map={'1':'方案 1 · 极致兼容（保障启动）','2':'方案 2 · 官方推荐（官方算法）','3':'方案 3 · 玩家分享（同处理器）'};
+  const map={'1':'方案 1 · 极致兼容','2':'方案 2 · 官方推荐','3':'方案 3 · 玩家分享'};
   const n=el.dataset.plan;
   document.querySelector('.sheet-foot .btn-primary').textContent='应用方案 '+n+' · 切换并重启';
   document.getElementById('appliedPlan').textContent=map[n];
@@ -788,7 +722,7 @@ function goRestart(){
     spin.style.display='none'; ring.style.display='flex';
     title.style.display='block';
     title.textContent='已成功应用配置方案';
-    step.style.display='none';
+    step.style.visibility='hidden';
   },2600);
 }
 
