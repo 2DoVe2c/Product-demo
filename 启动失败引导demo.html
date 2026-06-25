@@ -381,6 +381,99 @@ body {
 .drawer-foot { padding:12px 20px; border-top:1px solid rgba(255,255,255,.06); flex-shrink:0; }
 .drawer-foot .btn-primary { background:linear-gradient(135deg,#338feb,#0063b5); color:#fff; }
 
+/* 第5页：游戏运行中界面 + 侧滑上报面板 */
+.game-view {
+  position:absolute; inset:0; z-index:9; display:none; flex-direction:column;
+  background:radial-gradient(circle at 30% 40%, rgba(20,20,40,.9), #000 70%);
+}
+.game-view.show { display:flex; }
+.game-hud {
+  position:absolute; top:0; left:0; right:0; height:26px;
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  background:rgba(0,0,0,.5); font-size:10px; font-family:var(--font-number);
+}
+.hud-stat .hk { color:#6b7280; }
+.hud-stat .hv { font-weight:600; }
+.hud-sep { width:1px; height:12px; background:#2a3040; }
+.report-trigger {
+  position:absolute; right:0; top:50%; transform:translateY(-50%);
+  width:26px; height:60px; background:rgba(51,143,235,.28);
+  border-radius:8px 0 0 8px; border:1px solid rgba(51,143,235,.35); border-right:none;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:all .2s; z-index:2;
+  writing-mode:vertical-rl; font-size:10px; color:#7fc1ff; letter-spacing:2px;
+}
+.report-trigger:hover { background:rgba(51,143,235,.45); }
+.ingame-panel {
+  position:absolute; top:0; right:0; bottom:0; width:426px; z-index:12;
+  background:rgba(14,18,26,.94); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  border-left:1px solid rgba(51,143,235,.2); box-shadow:-6px 0 24px rgba(0,0,0,.6);
+  transform:translateX(100%); transition:transform .3s cubic-bezier(.32,.72,0,1);
+  display:flex; flex-direction:column;
+}
+.ingame-panel.show { transform:translateX(0); }
+.ingame-panel-head {
+  padding:14px 16px 12px; border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+}
+.ingame-panel-head h3 { font-size:15px; font-weight:600; }
+.ingame-panel-body { flex:1; overflow-y:auto; padding:13px 16px; }
+.ingame-panel-body::-webkit-scrollbar { display:none; }
+.ingame-panel-head .close-btn {
+  position:static; transform:none; width:26px; height:26px; border-radius:50%;
+  background:rgba(255,255,255,.1); border:none; color:var(--text-secondary);
+  font-size:13px; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.ingame-panel-head .close-btn:hover { background:rgba(255,255,255,.18); }
+
+/* 游戏内设置面板布局 */
+.gv-stats { display:flex;align-items:center;justify-content:center;height:26px;background:#13171e;border-bottom:1px solid #2a3040;gap:12px;font-size:10px;font-family:var(--font-number);flex-shrink:0; }
+.gv-body { flex:1;display:flex;overflow:hidden; }
+.gv-ctrl { flex:0 0 340px;background:#000;position:relative; }
+.gv-panel { flex:1;display:flex;background:#1c2029; }
+.gv-nav { width:108px;background:#13171e;display:flex;flex-direction:column;padding:12px 8px;gap:4px;border-right:1px solid #2a3040; }
+.gv-nav-item { display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 8px;border-radius:10px;cursor:pointer;transition:all .15s;color:#6b7280;font-size:12px; }
+.gv-nav-item:hover { background:#1e2530;color:#c0c8d4; }
+.gv-nav-item.active { background:#252b36;color:#fff; }
+.gv-nav-sep { flex:1; }
+.gv-content { flex:1;overflow-y:auto;padding:16px 20px; }
+.gv-content::-webkit-scrollbar { display:none; }
+.gv-sec-title { font-size:16px;font-weight:600;color:#fff;margin-bottom:16px; }
+.gv-row { display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #252b36;min-height:46px; }
+.gv-row:last-child { border-bottom:none; }
+.gv-row .rl { font-size:14px;color:#e2e8f0; }
+.gv-row .rs { font-size:11px;color:#6b7280;margin-top:2px; }
+.gv-toggle { width:44px;height:26px;border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0; }
+.gv-toggle.on { background:#338feb; } .gv-toggle.off { background:#3a4050; }
+.gv-toggle::after { content:'';position:absolute;top:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .2s; }
+.gv-toggle.on::after { left:21px; } .gv-toggle.off::after { left:3px; }
+.gv-dd { display:flex;align-items:center;gap:6px;color:#6b7280;font-size:13px; }
+.gv-slider-wrap { padding:8px 0 14px; }
+.gv-slider-lbl { display:flex;justify-content:space-between;font-size:14px;color:#e2e8f0;margin-bottom:10px; }
+.gv-slider-val { font-family:var(--font-number);font-weight:600;color:#e2e8f0; }
+.gv-track { position:relative;height:4px;background:#3a4050;border-radius:2px; }
+.gv-fill { height:100%;width:62%;background:#338feb;border-radius:2px; }
+.gv-thumb { position:absolute;top:50%;transform:translateY(-50%);left:62%;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4);margin-left:-9px; }
+.gv-report-row { display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #252b36;cursor:pointer;transition:all .15s; }
+.gv-report-row:hover { opacity:.75; }
+.gv-report-row .rl { color:#ff8c69;display:flex;align-items:center;gap:6px; }
+/* 控制器按钮 */
+.ctrl-btn { position:absolute;background:#1a1a1a;border:2px solid #333;color:#bbb;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px; }
+.ctrl-circle { border-radius:50%;background:rgba(80,80,80,.5);border:2px solid #444;position:absolute; }
+.ctrl-dpad { position:absolute; }
+
+.fail-dropdown {
+  display:none; position:absolute; left:0; right:0; top:100%; z-index:20;
+  background:#2a2f3a; border:1px solid rgba(255,255,255,.12); border-radius:var(--radius-md);
+  overflow:hidden; margin-top:4px;
+}
+.fail-dropdown div {
+  padding:10px 12px; font-size:12px; color:var(--text-secondary); cursor:pointer; transition:background .15s;
+}
+.fail-dropdown div:hover { background:rgba(255,255,255,.08); color:#fff; }
+.fail-dropdown.open { display:block; }
+.info-select:hover { background:rgba(255,255,255,.08); }
+
 .hint { font-size:12px; color:var(--text-muted); text-align:center; max-width:874px; line-height:1.7; }
 </style>
 </head>
@@ -392,10 +485,11 @@ body {
 </div>
 
 <div class="stepbar">
-  <button id="t1" class="active" onclick="goLoading()">① 启动检测中（游戏加载超过3分钟未进入游戏或进入游戏后1分钟内游戏进程被杀掉）</button>
+  <button id="t1" class="active" onclick="goLoading()">① 启动检测中（加载超过3分钟或进游戏1分钟内进程被杀）</button>
   <button id="t2" onclick="goDiagnose()">② 启动失败引导弹窗</button>
   <button id="t3" onclick="goRestart()">③ 切换配置·重启反馈</button>
-  <button id="t4" onclick="goReport()">④ 游戏详情页-一键上报</button>
+  <button id="t4" onclick="goReport()">④ 游戏详情页-上报异常</button>
+  <button id="t5" onclick="goGameView()">⑤ 游戏内菜单-上报异常</button>
 </div>
 
 <div class="phone">
@@ -541,6 +635,15 @@ body {
     <div class="param-item"><div class="param-num">✓</div><div class="param-text">
       <div class="pn">几十个配置项里，真正影响启动的通常只有 2~4 个</div>
       <div class="pd">按照黑屏 / 花屏 / 闪退调整对应参数，不必摸索全部选项</div></div></div>
+    <div style="margin-top:14px;margin-bottom:6px;font-size:12px;font-weight:600;color:var(--text-secondary)">图文 / 视频教程</div>
+    <div class="tutorial-row">
+      <div class="tutorial" onclick="closeSub('sceneTip');toast('▶️ 打开视频教程：3 分钟搞定启动')">
+        <div class="ic video">▶️</div><div><div class="tt">视频教程</div><div class="td">3 分钟搞定</div></div>
+      </div>
+      <div class="tutorial" onclick="closeSub('sceneTip');toast('📖 打开图文教程：配置项逐条详解')">
+        <div class="ic doc">📖</div><div><div class="tt">图文教程</div><div class="td">配置项详解</div></div>
+      </div>
+    </div>
     <div class="sub-foot"><button class="btn btn-ghost" style="flex:1" onclick="closeSub('sceneTip')">我知道了</button></div>
   </div>
 
@@ -575,6 +678,96 @@ body {
     </div>
   </div>
 
+  <!-- 状态⑤：游戏内设置面板 + 侧滑上报 -->
+  <div class="game-view" id="gameView">
+    <!-- 顶部性能状态条 -->
+    <div class="gv-stats">
+      <span style="color:#f472b6;font-weight:600;font-size:11px">DXVK</span>
+      <div class="hud-sep"></div>
+      <span style="color:#6b7280;font-size:10px">CPU</span><span style="color:#e2e8f0;font-weight:600">70%</span>
+      <div class="hud-sep"></div>
+      <span style="color:#6b7280;font-size:10px">内存</span><span style="color:#e2e8f0;font-weight:600">74%</span>
+      <div class="hud-sep"></div>
+      <span style="color:#6b7280;font-size:10px">温度</span><span style="color:#fb923c;font-weight:600">57.0°C</span>
+      <div class="hud-sep"></div>
+      <span style="color:#6b7280;font-size:10px">帧率</span><span style="color:#4ade80;font-weight:600">67</span>
+    </div>
+    <div class="gv-body">
+      <!-- 左侧控制器区域 -->
+      <div class="gv-ctrl">
+        <div class="ctrl-btn" style="left:30px;top:48px;width:72px;height:36px">LT</div>
+        <div class="ctrl-btn" style="left:30px;top:96px;width:72px;height:36px">LB</div>
+        <div class="ctrl-btn ctrl-circle" style="left:50px;top:150px;width:52px;height:52px">L3</div>
+        <div class="ctrl-circle" style="left:90px;top:210px;width:130px;height:130px;display:flex;align-items:center;justify-content:center">
+          <div class="ctrl-circle" style="position:relative;width:60px;height:60px;background:rgba(120,120,120,.5)"></div>
+        </div>
+        <div class="ctrl-btn" style="left:274px;top:215px;width:34px;height:34px;border-radius:6px">▲</div>
+        <div class="ctrl-btn" style="left:240px;top:249px;width:34px;height:34px;border-radius:6px">◀</div>
+        <div class="ctrl-btn" style="left:308px;top:249px;width:34px;height:34px;border-radius:6px">▶</div>
+        <div class="ctrl-btn" style="left:274px;top:283px;width:34px;height:34px;border-radius:6px">▼</div>
+      </div>
+      <!-- 右侧设置面板 -->
+      <div class="gv-panel">
+        <div class="gv-nav">
+          <div class="gv-nav-item"><span style="font-size:18px">👤</span><span>操作</span></div>
+          <div class="gv-nav-item active"><span style="font-size:18px">📊</span><span>性能</span></div>
+          <div class="gv-nav-item"><span style="font-size:18px">⚙️</span><span>设置</span></div>
+          <div class="gv-nav-item"><span style="font-size:18px">⌨️</span><span>键盘</span></div>
+          <div class="gv-nav-sep"></div>
+          <div class="gv-nav-item"><span style="font-size:18px">🚪</span><span>退出</span></div>
+        </div>
+        <div class="gv-content">
+          <div class="gv-sec-title">性能</div>
+          <div class="gv-row"><span class="rl">显卡直通模式</span><div class="gv-toggle off"></div></div>
+          <div class="gv-row"><span class="rl">AI超级插帧</span><div class="gv-dd">停用 <svg width="12" height="12" viewBox="0 0 12 12" fill="#6b7280"><path d="M2 4l4 4 4-4" stroke="#6b7280" stroke-width="1.5" fill="none"/></svg></div></div>
+          <div class="gv-row"><span class="rl">开启帧数限制</span><div class="gv-toggle on"></div></div>
+          <div class="gv-slider-wrap">
+            <div class="gv-slider-lbl"><span>帧数限制</span><span class="gv-slider-val">60 FPS</span></div>
+            <div class="gv-track"><div class="gv-fill"></div><div class="gv-thumb"></div></div>
+          </div>
+          <!-- 上报异常入口 -->
+          <div class="gv-report-row" onclick="document.getElementById('ingamePanel').classList.toggle('show')">
+            <span class="rl" style="color:#fff">上报异常</span>
+            <span style="color:#6b7280;font-size:16px">›</span>
+          </div>
+          <div class="gv-row"><div><div class="rl">画质增强</div><div class="rs">个性化的画质增强调节</div></div><span style="color:#6b7280;font-size:16px">›</span></div>
+          <div class="gv-row"><span class="rl">进程管理</span><span style="color:#6b7280;font-size:16px">›</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- 侧滑上报面板 -->
+    <div class="ingame-panel" id="ingamePanel">
+      <div class="ingame-panel-head">
+        <h3>上报异常</h3>
+        <button class="close-btn" onclick="document.getElementById('ingamePanel').classList.remove('show')">✕</button>
+      </div>
+      <div class="ingame-panel-body">
+        <div class="drawer-label">以下信息将自动附带上报，官方适配团队会针对性排查。</div>
+        <div class="info-grid">
+          <div class="info-row"><span class="ik">当前机型</span><span class="iv">Redmi K70 Pro</span></div>
+          <div class="info-row"><span class="ik">处理器</span><span class="iv">骁龙 8 Gen3</span></div>
+          <div class="info-row"><span class="ik">游戏 ID</span><span class="iv">#1245620</span></div>
+          <div class="info-row"><span class="ik">内核版本</span><span class="iv">6.0.2</span></div>
+          <div class="info-row"><span class="ik">已尝试方案</span><span class="iv">方案 1 · 极致兼容</span></div>
+          <div class="info-row info-select" onclick="toggleIngameFailType(this)" style="cursor:pointer;position:relative">
+            <span class="ik">异常类型</span>
+            <span class="iv" id="ingameFailTypeVal" style="display:flex;align-items:center;gap:4px">长时间加载 <span style="font-size:10px;opacity:.5">▼</span></span>
+            <div class="fail-dropdown" id="ingameFailDropdown">
+              <div onclick="selectIngameFailType(event,'长时间加载')">长时间加载</div>
+              <div onclick="selectIngameFailType(event,'闪退')">闪退</div>
+              <div onclick="selectIngameFailType(event,'黑屏')">黑屏</div>
+              <div onclick="selectIngameFailType(event,'花屏')">花屏</div>
+            </div>
+          </div>
+        </div>
+        <div class="report-desc">上报后官方将在 1~3 个工作日内排查该机型与游戏的适配问题。</div>
+      </div>
+      <div class="ingame-panel-foot">
+        <button class="btn btn-primary" style="width:100%;background:linear-gradient(135deg,#338feb,#0063b5);color:#fff" onclick="toast('✅ 已上报成功，官方将在 1~3 个工作日内处理')">确认上报</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 状态④：更多菜单浮层 -->
   <div class="settings-overlay" id="settingsOverlay">
     <div class="menu-modal">
@@ -585,16 +778,19 @@ body {
         <div class="menu-item" onclick="toast('⚙️ 跳转到 PC 引擎设置页')">
           <div class="menu-ic">⚙️</div><div class="menu-label">PC引擎设置</div>
         </div>
+        <div class="menu-item" onclick="document.getElementById('reportDrawer').classList.add('show')">
+          <div class="menu-ic report">🛟</div><div class="menu-label">上报异常</div>
+        </div>
         <div class="menu-item" onclick="toast('🔗 分享')">
           <div class="menu-ic">🔗</div><div class="menu-label">分享</div>
         </div>
         <div class="menu-item" onclick="toast('🖥️ 添加到桌面')">
           <div class="menu-ic">🖥️</div><div class="menu-label">添加到桌面</div>
         </div>
+        <div class="menu-divider"></div>
         <div class="menu-item" onclick="toast('🔄 版本切换')">
           <div class="menu-ic">🔄</div><div class="menu-label">版本切换</div>
         </div>
-        <div class="menu-divider"></div>
         <div class="menu-item" onclick="toast('🗑️ 移除游戏')">
           <div class="menu-ic">🗑️</div><div class="menu-label">移除游戏</div>
         </div>
@@ -604,9 +800,6 @@ body {
         <div class="menu-item" onclick="toast('🎮 按键与布局')">
           <div class="menu-ic">🎮</div><div class="menu-label">按键与布局</div>
         </div>
-        <div class="menu-item" onclick="document.getElementById('reportDrawer').classList.add('show')">
-          <div class="menu-ic report">🛟</div><div class="menu-label">一键上报</div>
-        </div>
       </div>
     </div>
   </div>
@@ -614,7 +807,7 @@ body {
   <!-- 状态④：一键上报右侧抽屉 -->
   <div class="drawer" id="reportDrawer">
     <div class="drawer-head">
-      <h3>🛟 一键上报</h3>
+      <h3>上报异常</h3>
       <button class="close-btn" onclick="closeDrawer()">✕</button>
     </div>
     <div class="drawer-body">
@@ -624,8 +817,17 @@ body {
         <div class="info-row"><span class="ik">处理器</span><span class="iv">骁龙 8 Gen3</span></div>
         <div class="info-row"><span class="ik">游戏 ID</span><span class="iv">#1245620</span></div>
         <div class="info-row"><span class="ik">内核版本</span><span class="iv">6.0.2</span></div>
-        <div class="info-row"><span class="ik">异常类型</span><span class="iv">长时间未进入游戏</span></div>
         <div class="info-row"><span class="ik">已尝试方案</span><span class="iv">方案 1 · 极致兼容</span></div>
+        <div class="info-row info-select" onclick="toggleFailType(this)" style="cursor:pointer;position:relative">
+          <span class="ik">异常类型</span>
+          <span class="iv" id="failTypeVal" style="display:flex;align-items:center;gap:6px">长时间加载 <span style="font-size:10px;opacity:.5">▼</span></span>
+          <div class="fail-dropdown" id="failDropdown">
+            <div onclick="selectFailType(event,'长时间加载')">长时间加载</div>
+            <div onclick="selectFailType(event,'闪退')">闪退</div>
+            <div onclick="selectFailType(event,'黑屏')">黑屏</div>
+            <div onclick="selectFailType(event,'花屏')">花屏</div>
+          </div>
+        </div>
       </div>
       <div class="report-desc">上报后官方将在 1~3 个工作日内排查该机型与游戏的适配问题。</div>
     </div>
@@ -638,7 +840,7 @@ body {
 </div>
 
 <div class="hint">
-  点击顶部 ① ② ③ 切换状态 · 游戏加载超过3分钟未进入游戏或进入游戏后1分钟内游戏进程被杀掉
+  点击顶部 ① ② ③ 切换状态 · 加载超过3分钟或进游戏1分钟内进程被杀
 </div>
 
 <script>
@@ -663,7 +865,7 @@ const sceneData = {
 function showMask(){ document.getElementById('mask').classList.add('show'); }
 function hideMask(){ document.getElementById('mask').classList.remove('show'); }
 function setTab(id){
-  ['t1','t2','t3','t4'].forEach(t=>document.getElementById(t).classList.remove('active'));
+  ['t1','t2','t3','t4','t5'].forEach(t=>document.getElementById(t).classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
@@ -671,8 +873,27 @@ function goLoading(){
   setTab('t1');
   closeAllSheets(); hideMask(); closeDrawer();
   document.getElementById('settingsOverlay').classList.remove('show');
+  document.getElementById('gameView').classList.remove('show');
   document.getElementById('loadingWrap').style.display='flex';
   document.getElementById('restartWrap').classList.remove('show');
+}
+
+function goGameView(){
+  setTab('t5');
+  closeAllSheets(); hideMask(); closeDrawer();
+  document.getElementById('settingsOverlay').classList.remove('show');
+  document.getElementById('loadingWrap').style.display='none';
+  document.getElementById('restartWrap').classList.remove('show');
+  document.getElementById('ingamePanel').classList.remove('show');
+  document.getElementById('gameView').classList.add('show');
+}
+function toggleIngameFailType(el){
+  document.getElementById('ingameFailDropdown').classList.toggle('open');
+}
+function selectIngameFailType(e,val){
+  e.stopPropagation();
+  document.getElementById('ingameFailTypeVal').innerHTML=val+' <span style="font-size:10px;opacity:.5">▼</span>';
+  document.getElementById('ingameFailDropdown').classList.remove('open');
 }
 
 function goReport(){
@@ -744,6 +965,15 @@ function closeAllSheets(){ document.getElementById('diagSheet').classList.remove
 function closeAll(){
   hideMask(); closeAllSheets();
   if(document.getElementById('t2').classList.contains('active')) goLoading();
+}
+
+function toggleFailType(el){
+  document.getElementById('failDropdown').classList.toggle('open');
+}
+function selectFailType(e,val){
+  e.stopPropagation();
+  document.getElementById('failTypeVal').innerHTML=val+' <span style="font-size:10px;opacity:.5">▼</span>';
+  document.getElementById('failDropdown').classList.remove('open');
 }
 
 function reportSubmit(){ toast('✅ 已上报：Redmi K70 Pro · 游戏ID #1245620，官方将排查并下发适配方案'); }
