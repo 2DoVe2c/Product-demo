@@ -80,28 +80,71 @@ body {
 
 /* 启动 loading */
 .loading-wrap {
-  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  gap:36px; text-align:left; padding:0 60px;
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:14px; text-align:center; padding:0 60px 112px;
+}
+.launch-icons { display:flex; align-items:center; justify-content:center; gap:22px; }
+.launch-icon {
+  width:90px; height:90px; border-radius:var(--radius-xl); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:42px;
+}
+.steam-cover {
+  background:linear-gradient(135deg,#338feb,#0a4c8a);
+  box-shadow:0 8px 24px rgba(51,143,235,.38);
 }
 .game-cover {
-  width:90px; height:90px; border-radius:var(--radius-xl); flex-shrink:0;
-  background:linear-gradient(135deg,#8174fa,#673fb8); display:flex;
-  align-items:center; justify-content:center; font-size:42px;
+  background:linear-gradient(135deg,#8174fa,#673fb8);
   box-shadow:0 8px 24px rgba(129,116,250,.4);
 }
-.loading-info { display:flex; flex-direction:column; gap:12px; max-width:420px; }
-.loading-title { font-size:18px; font-weight:600; display:flex; align-items:center; gap:10px; }
-.loading-game { font-size:14px; color:var(--text-secondary); }
-.loading-tip { font-size:12px; color:var(--text-muted); line-height:1.6; }
+.launch-arrow { font-size:24px; color:var(--brand-gold); font-family:var(--font-number); opacity:.95; }
+.loading-info { display:flex; flex-direction:column; align-items:center; gap:12px; max-width:420px; }
+.loading-title { font-size:18px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px; }
+.loading-game { font-size:13px; color:var(--text-secondary); white-space:nowrap; }
+.loading-tip {
+  position:absolute; left:50%; bottom:15px; transform:translateX(-50%);
+  width:max-content; font-size:12px; color:var(--text-muted); line-height:1.6;
+}
+.loading-status {
+  position:absolute; left:50%; bottom:48px; transform:translateX(-50%);
+  display:flex; align-items:center; justify-content:center; gap:14px;
+}
+.loading-status .loading-title { font-size:15px; }
 .loading-timer {
   font-family:var(--font-number); font-size:13px; color:var(--brand-gold);
   background:rgba(255,204,67,.1); padding:5px 14px; border-radius:var(--radius-full); align-self:flex-start;
 }
-.progress { width:280px; height:4px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
+.detect-card {
+  position:absolute; left:50%; bottom:76px; transform:translateX(-50%);
+  width:max-content; min-width:210px; background:rgba(26,26,26,.78); border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-md); box-shadow:0 8px 24px rgba(0,0,0,.24); overflow:hidden;
+}
+.detect-title {
+  display:flex; align-items:center; justify-content:space-between; padding:10px 12px;
+  cursor:pointer; transition:all .2s;
+}
+.detect-title:hover { background:rgba(255,204,67,.06); }
+.detect-title .dt { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--text-secondary); }
+.detect-title .dt::before { content:''; width:7px; height:7px; border-radius:50%; background:#ff8aa0; box-shadow:0 0 10px rgba(255,86,120,.6); }
+.detect-title .ds { font-size:10px; color:var(--brand-gold); }
+.detect-list { display:none; flex-direction:column; gap:6px; padding:0 12px 10px; }
+.detect-card.open .detect-list { display:flex; }
+.detect-item {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius-sm); padding:7px 9px; cursor:pointer; transition:all .2s;
+}
+.detect-item:hover { border-color:rgba(255,204,67,.45); background:rgba(255,204,67,.07); }
+.detect-item .name { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-secondary); }
+.detect-item .dot { width:6px; height:6px; border-radius:50%; background:#ff8aa0; box-shadow:0 0 10px rgba(255,86,120,.6); }
+.detect-item .state { font-size:10px; color:var(--brand-gold); white-space:nowrap; }
+.progress {
+  position:absolute; left:50%; bottom:34px; transform:translateX(-50%);
+  width:280px; height:4px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden;
+}
 .progress i { display:block; height:100%; width:42%; background:linear-gradient(90deg,#ffcc43,#ffd98f); border-radius:2px;
   animation:load 2.6s ease-in-out infinite; }
 @keyframes load { 0%{width:18%} 50%{width:70%} 100%{width:42%} }
-.spinner { width:38px; height:38px; border:3px solid rgba(255,255,255,.15);
+.spinner { width:24px; height:24px; border:2px solid rgba(255,255,255,.15);
   border-top-color:var(--brand-gold); border-radius:50%; animation:spin .9s linear infinite; flex-shrink:0; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
@@ -504,10 +547,23 @@ body {
     <div class="game-bg"></div>
     <!-- 状态①：启动 loading -->
     <div class="loading-wrap" id="loadingWrap">
-      <div class="game-cover">🎮</div>
+      <div class="launch-icons">
+        <div class="launch-icon steam-cover">♨</div>
+        <div class="launch-arrow">⇄</div>
+        <div class="launch-icon game-cover">🎮</div>
+      </div>
       <div class="loading-info">
-        <div class="loading-title"><span class="spinner"></span> 游戏启动中…</div>
-        <div class="loading-game">艾尔登法环 · ELDEN RING</div>
+        <div class="detect-card" id="detectCard">
+          <div class="detect-title" onclick="toggleDetectDrawer()"><span class="dt">游戏启动异常</span><span class="ds">查看</span></div>
+          <div class="detect-list">
+            <div class="detect-item" onclick="goDiagnose()"><div class="name"><span class="dot"></span>加载时间过长</div><div class="state">去处理</div></div>
+            <div class="detect-item" onclick="goDiagnose()"><div class="name"><span class="dot"></span>游戏内异常</div><div class="state">去处理</div></div>
+          </div>
+        </div>
+        <div class="loading-status">
+          <div class="loading-game">艾尔登法环 · ELDEN RING</div>
+          <div class="loading-title"><span class="spinner"></span> 游戏启动中…</div>
+        </div>
         <div class="progress"><i></i></div>
         <div class="loading-tip">正在加载游戏组件 长时间未进入游戏将为您提供引导</div>
       </div>
@@ -864,6 +920,7 @@ const sceneData = {
 
 function showMask(){ document.getElementById('mask').classList.add('show'); }
 function hideMask(){ document.getElementById('mask').classList.remove('show'); }
+function toggleDetectDrawer(){ document.getElementById('detectCard').classList.toggle('open'); }
 function setTab(id){
   ['t1','t2','t3','t4','t5'].forEach(t=>document.getElementById(t).classList.remove('active'));
   document.getElementById(id).classList.add('active');
