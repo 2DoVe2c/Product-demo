@@ -304,10 +304,6 @@ tbody tr:hover { background:#fff9e8; }
     <div class="side-foot"><div class="k">今日有效上报处理率</div><div class="v">82.4%</div></div>
   </aside>
   <main class="main">
-    <header class="topbar">
-      <div class="title-block"><h2 id="pageTitle">PC模拟器云配置管理</h2><p id="pageSub">管理 PC 模拟器配置分享、GPU分类、通用/推荐与审核状态</p></div>
-      <div class="top-actions"><div class="pill">国内 / 海外 <span>双包</span></div><div class="pill">时间范围 <span>近7天</span></div><button class="btn btn-ghost" onclick="toast('已刷新最新兼容数据')">刷新</button><button class="btn btn-primary" onclick="toast('已导出当前筛选结果')">导出CSV</button></div>
-    </header>
     <section class="content">
       <div class="module active" id="plans">
         <div class="panel">
@@ -467,7 +463,7 @@ tbody tr:hover { background:#fff9e8; }
 <div class="toast" id="toast"></div>
 <script>
 const titles={plans:['PC模拟器云配置管理','管理 PC 模拟器配置分享、GPU分类、通用/推荐与审核状态'],strategies:['异常修复策略','点击策略进入脚本配置弹窗，调整具体修复参数'],reports:['异常上报管理','处理用户上报的机型、游戏与内核适配问题']};
-function switchModule(id,btn){document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));btn.classList.add('active');document.getElementById('pageTitle').textContent=titles[id][0];document.getElementById('pageSub').textContent=titles[id][1];closeDrawer();}
+function switchModule(id,btn){document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));btn.classList.add('active');closeDrawer();}
 function openDrawer(title,desc){document.getElementById('drawerTitle').textContent=title;document.getElementById('drawerDesc').textContent=desc;document.getElementById('drawer').classList.add('show');}
 function closeDrawer(){document.getElementById('drawer').classList.remove('show');}
 function openCloudModal(title){document.getElementById('cloudTitle').textContent=title;document.getElementById('cloudMask').classList.add('show');}
