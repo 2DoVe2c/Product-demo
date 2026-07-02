@@ -372,19 +372,25 @@ body {
 /* 重启反馈 */
 .restart-wrap {
   position:absolute; inset:0; z-index:20; display:none;
-  flex-direction:row; align-items:center; justify-content:center; gap:40px;
-  padding:0 70px; background:linear-gradient(135deg,#101018,#000);
+  align-items:center; justify-content:center; pointer-events:none;
+  padding:0; background:transparent;
 }
 .restart-wrap.show { display:flex; }
-.restart-left { display:flex; flex-direction:column; align-items:center; gap:18px; }
-.success-ring {
-  width:74px; height:74px; border-radius:50%; background:rgba(51,216,164,.12);
-  display:flex; align-items:center; justify-content:center; font-size:36px; border:2px solid var(--brand-green);
+.restart-toast-card {
+  width:286px; min-height:72px; display:flex; align-items:center; gap:10px;
+  background:rgba(28,26,32,.96); border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-md); box-shadow:0 12px 30px rgba(0,0,0,.48);
+  padding:12px 14px; pointer-events:auto; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
 }
-.restart-right { display:flex; flex-direction:column; gap:14px; max-width:360px; }
-.restart-right h2 { font-size:20px; font-weight:600; }
-.applied { background:var(--bg-card); border:1px solid var(--border-default); border-radius:var(--radius-lg); padding:12px 16px; }
-.applied .val { font-size:14px; font-weight:600; color:var(--brand-gold); }
+.restart-left { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.success-ring {
+  width:34px; height:34px; border-radius:50%; background:rgba(51,216,164,.12);
+  display:flex; align-items:center; justify-content:center; font-size:18px; border:1.5px solid var(--brand-green);
+}
+.restart-right { display:flex; flex-direction:column; gap:7px; max-width:210px; }
+.restart-right h2 { font-size:13px; font-weight:600; }
+.applied { background:var(--bg-card); border:1px solid var(--border-default); border-radius:var(--radius-md); padding:7px 10px; }
+.applied .val { font-size:12px; font-weight:600; color:var(--brand-gold); }
 .substep { font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:8px; }
 
 .toast {
@@ -663,16 +669,18 @@ body {
 
   <!-- 状态③：重启反馈 -->
   <div class="restart-wrap" id="restartWrap">
-    <div class="restart-left">
-      <div class="spinner" id="restartSpin" style="width:64px;height:64px;border-width:4px"></div>
-      <div class="success-ring" id="successRing" style="display:none">✓</div>
-    </div>
-    <div class="restart-right">
-      <h2 id="restartTitle">正在应用配置修改</h2>
-      <div class="applied">
-        <div class="val" id="appliedPlan">方案 1 · 极致兼容</div>
+    <div class="restart-toast-card">
+      <div class="restart-left">
+        <div class="spinner" id="restartSpin" style="width:28px;height:28px;border-width:2px"></div>
+        <div class="success-ring" id="successRing" style="display:none">✓</div>
       </div>
-      <div class="substep" id="restartStep" style="display:none"></div>
+      <div class="restart-right">
+        <h2 id="restartTitle">正在应用配置修改</h2>
+        <div class="applied">
+          <div class="val" id="appliedPlan">方案 1 · 极致兼容</div>
+        </div>
+        <div class="substep" id="restartStep" style="display:none"></div>
+      </div>
     </div>
   </div>
 
@@ -838,6 +846,7 @@ function goLoading(){
   document.getElementById('gameView').classList.remove('show');
   document.getElementById('loadingWrap').style.display='flex';
   document.getElementById('restartWrap').classList.remove('show');
+  clearTimeout(window._restartTimer);
 }
 
 function goGameView(){
@@ -845,6 +854,7 @@ function goGameView(){
   hideMask();
   document.getElementById('loadingWrap').style.display='none';
   document.getElementById('restartWrap').classList.remove('show');
+  clearTimeout(window._restartTimer);
   document.getElementById('ingamePanel').classList.remove('show');
   document.getElementById('gameView').classList.add('show');
 }
@@ -869,7 +879,7 @@ function selectReportMiniType(e,val){
 function goRestart(label){
   setTab('t3');
   hideMask();
-  document.getElementById('loadingWrap').style.display='none';
+  document.getElementById('loadingWrap').style.display='flex';
   document.getElementById('gameView').classList.remove('show');
   const spin=document.getElementById('restartSpin');
   const ring=document.getElementById('successRing');
@@ -882,12 +892,13 @@ function goRestart(label){
   document.getElementById('appliedPlan').textContent=appliedLabel;
   title.textContent='正在应用配置修改';
   document.getElementById('restartWrap').classList.add('show');
-  setTimeout(()=>{
+  clearTimeout(window._restartTimer);
+  window._restartTimer=setTimeout(()=>{
     spin.style.display='none'; ring.style.display='flex';
     title.style.display='block';
     title.textContent='配置修改已成功，重启游戏中...';
     step.style.visibility='hidden';
-  },2600);
+  },2200);
 }
 
 function toast(msg){
