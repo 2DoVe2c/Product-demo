@@ -115,17 +115,19 @@ body {
 }
 .detect-card {
   position:absolute; top:44px; right:26px; transform:none;
-  width:310px; background:rgba(26,26,26,.88); border:1px solid rgba(255,255,255,.08);
+  width:286px; background:rgba(26,26,26,.88); border:1px solid rgba(255,255,255,.08);
   border-radius:var(--radius-lg); box-shadow:0 12px 32px rgba(0,0,0,.42); overflow:visible;
   backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
 }
 .detect-title {
-  display:flex; align-items:center; justify-content:space-between; padding:11px 12px;
+  display:flex; align-items:center; justify-content:space-between; padding:10px 10px;
   cursor:pointer; transition:all .2s; border-bottom:1px solid rgba(255,255,255,.06);
 }
 .detect-title:hover { background:rgba(255,204,67,.06); }
+.detect-title-copy { display:flex; flex-direction:column; gap:3px; align-items:flex-start; }
 .detect-title .dt { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--text-secondary); }
 .detect-title .dt::before { content:''; width:7px; height:7px; border-radius:50%; background:#ff8aa0; box-shadow:0 0 10px rgba(255,86,120,.6); }
+.detect-subtitle { padding-left:15px; font-size:10px; color:var(--text-muted); line-height:1.2; }
 .detect-title .ds { font-size:10px; color:var(--brand-gold); }
 .detect-list { display:none; flex-direction:column; gap:6px; padding:10px 12px; }
 .detect-card.open .detect-list { display:flex; }
@@ -607,7 +609,7 @@ body {
       </div>
       <div class="loading-info">
         <div class="detect-card" id="detectCard">
-          <div class="detect-title" onclick="toggleDetectDrawer()"><span class="dt">游戏启动异常</span><span class="ds">查看</span></div>
+          <div class="detect-title" onclick="toggleDetectDrawer()"><div class="detect-title-copy"><span class="dt">游戏启动异常</span><span class="detect-subtitle">为您提供以下解决方案</span></div><span class="ds">查看</span></div>
           <div class="detect-list" id="detectList">
             <div class="detect-item" onclick="openDetectPanel('load')"><div class="name"><span class="dot"></span>切换兼容性方案</div><div class="state">查看</div></div>
             <div class="detect-item" onclick="openDetectPanel('crash')"><div class="name"><span class="dot"></span>游戏闪退</div><div class="state">查看</div></div>
