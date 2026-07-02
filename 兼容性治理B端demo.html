@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>兼容性治理 · B端管理后台 Demo</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg-page:#f4f6f9;
+  --bg-card:#ffffff;
+  --bg-soft:#f8fafc;
+  --bg-line:#edf0f5;
+  --text-primary:#1f2937;
+  --text-secondary:#4b5563;
+  --text-muted:#8a94a6;
+  --brand-gold:#f5a400;
+  --brand-blue:#1683e9;
+  --brand-green:#20b486;
+  --brand-red:#f05a5a;
+  --brand-purple:#7b61ff;
+  --border:#dfe4ec;
+  --radius-sm:4px;
+  --radius-md:8px;
+  --radius-lg:12px;
+  --font-primary:'MiSans VF','MiSans','PingFang SC',-apple-system,sans-serif;
+  --font-number:'D-DIN-PRO',Consolas,var(--font-primary);
+}
+body {
+  font-family:var(--font-primary);
+  color:var(--text-primary);
+  background:var(--bg-page);
+  height:100vh;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+.app { height:100vh; display:grid; grid-template-columns:224px 1fr; }
+.sidebar {
+  background:#fff;
+  border-right:1px solid var(--border);
+  padding:16px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.brand { display:flex; align-items:center; gap:10px; padding:0 6px 12px; border-bottom:1px solid var(--bg-line); }
+.brand-icon {
+  width:34px; height:34px; border-radius:9px;
+  background:linear-gradient(135deg,#ffcc43,#ff9f00);
+  color:#2b2100;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800;
+}
+.brand h1 { font-size:15px; font-weight:700; }
+.brand p { font-size:10px; color:var(--text-muted); margin-top:2px; }
+.nav { display:flex; flex-direction:column; gap:6px; }
+.nav-item {
+  width:100%; border:none; background:transparent; cursor:pointer;
+  display:flex; align-items:center; gap:9px;
+  padding:10px 11px; border-radius:var(--radius-md);
+  color:var(--text-secondary); font-size:13px; font-family:var(--font-primary);
+  text-align:left; transition:.16s;
+}
+.nav-item:hover { background:#f2f6fb; color:var(--text-primary); }
+.nav-item.active { background:#fff7df; color:#9a6500; font-weight:700; }
+.nav-ic { width:20px; text-align:center; }
+.side-foot {
+  margin-top:auto;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:12px;
+}
+.side-foot .k { font-size:11px; color:var(--text-muted); }
+.side-foot .v { margin-top:5px; font-family:var(--font-number); font-size:22px; font-weight:800; color:var(--brand-green); }
+.main { min-width:0; display:flex; flex-direction:column; }
+.topbar {
+  height:58px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 22px;
+}
+.title-block h2 { font-size:18px; font-weight:700; }
+.title-block p { margin-top:3px; color:var(--text-muted); font-size:11px; }
+.top-actions { display:flex; align-items:center; gap:8px; }
+.pill {
+  height:30px; border:1px solid var(--border); border-radius:20px; padding:0 12px;
+  background:#fff; color:var(--text-secondary); font-size:12px;
+  display:flex; align-items:center; gap:6px;
+}
+.pill span { color:var(--text-muted); }
+.btn {
+  border:none; border-radius:var(--radius-sm); padding:8px 12px;
+  font-family:var(--font-primary); font-size:12px; font-weight:700;
+  cursor:pointer; transition:.15s; white-space:nowrap;
+}
+.btn-primary { background:#1e9af0; color:#fff; }
+.btn-primary:hover { background:#0f82d2; }
+.btn-gold { background:#f6a313; color:#fff; }
+.btn-gold:hover { background:#df9007; }
+.btn-ghost { background:#fff; color:var(--text-secondary); border:1px solid var(--border); }
+.btn-ghost:hover { border-color:#b7c1d0; color:var(--text-primary); }
+.btn-danger { background:#ff5d4f; color:#fff; }
+.content { flex:1; min-height:0; overflow:hidden; padding:18px 22px 22px; }
+.module { display:none; height:100%; min-height:0; flex-direction:column; gap:14px; }
+.module.active { display:flex; }
+.metrics { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+.metric {
+  background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg);
+  min-height:86px; padding:14px; box-shadow:0 4px 14px rgba(31,41,55,.04);
+}
+.metric .label { display:flex; justify-content:space-between; color:var(--text-muted); font-size:11px; }
+.metric .num { margin-top:10px; font-family:var(--font-number); font-size:26px; font-weight:800; }
+.metric .trend { margin-top:4px; font-size:10px; color:var(--brand-green); }
+.metric.gold .num { color:#d88b00; }
+.metric.red .num { color:var(--brand-red); }
+.metric.blue .num { color:var(--brand-blue); }
+.metric.green .num { color:var(--brand-green); }
+.work-grid { flex:1; min-height:0; display:grid; grid-template-columns:1fr 360px; gap:14px; }
+.panel {
+  background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg);
+  overflow:hidden; display:flex; flex-direction:column; min-height:0;
+  box-shadow:0 6px 18px rgba(31,41,55,.05);
+}
+.panel-head {
+  min-height:46px; padding:0 14px; border-bottom:1px solid var(--bg-line);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.panel-head h3 { font-size:14px; font-weight:700; }
+.panel-head .sub { margin-left:8px; color:var(--text-muted); font-weight:400; font-size:10px; }
+.filters {
+  display:grid; grid-template-columns:repeat(6,1fr); gap:8px;
+  padding:12px 14px; background:#fbfcfe; border-bottom:1px solid var(--bg-line);
+}
+.input,.select {
+  height:32px; border:1px solid var(--border); border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 10px; color:var(--text-secondary); font-size:12px; background:#fff;
+}
+.input span,.select span { color:var(--text-muted); }
+.filter-actions { display:flex; gap:8px; }
+.table-wrap { flex:1; min-height:0; overflow:auto; }
+.table-wrap::-webkit-scrollbar { width:6px; height:6px; }
+.table-wrap::-webkit-scrollbar-thumb { background:#ccd3de; border-radius:10px; }
+table { width:100%; min-width:980px; border-collapse:collapse; }
+th,td { padding:10px 12px; border-bottom:1px solid var(--bg-line); text-align:left; white-space:nowrap; font-size:12px; }
+th { position:sticky; top:0; background:#f8fafc; color:#697386; font-weight:700; z-index:1; }
+td { color:var(--text-secondary); }
+tbody tr { cursor:pointer; }
+tbody tr:hover { background:#fff9e8; }
+.tag { display:inline-flex; align-items:center; height:20px; padding:0 7px; border-radius:var(--radius-sm); font-size:10px; font-weight:700; }
+.tag.red { background:#fff0f0; color:#df3f52; }
+.tag.green { background:#eafaf5; color:#158f6b; }
+.tag.blue { background:#edf6ff; color:#1677c8; }
+.tag.gold { background:#fff6db; color:#b97900; }
+.tag.gray { background:#eef1f5; color:#697386; }
+.status { display:flex; align-items:center; gap:6px; }
+.dot { width:6px; height:6px; border-radius:50%; background:var(--brand-green); }
+.dot.red { background:var(--brand-red); }
+.dot.gold { background:var(--brand-gold); }
+.chart { padding:14px; display:flex; flex-direction:column; gap:9px; }
+.bar-row { display:grid; grid-template-columns:86px 1fr 48px; gap:9px; align-items:center; color:var(--text-secondary); font-size:12px; }
+.bar { height:8px; border-radius:99px; background:#eef1f5; overflow:hidden; }
+.bar i { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,#f6a313,#ffcc43); }
+.timeline { padding:14px; display:flex; flex-direction:column; gap:10px; }
+.time-item { display:grid; grid-template-columns:70px 1fr; gap:9px; font-size:12px; }
+.time { color:var(--text-muted); font-family:var(--font-number); }
+.event { color:var(--text-secondary); }
+.detail { padding:14px; }
+.detail-title { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.detail-title h4 { font-size:14px; }
+.detail-card { border:1px solid var(--border); border-radius:var(--radius-md); background:#fbfcfe; padding:10px; margin-bottom:10px; }
+.detail-row { display:flex; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid var(--bg-line); }
+.detail-row:last-child { border-bottom:none; }
+.detail-row .k { color:var(--text-muted); font-size:11px; }
+.detail-row .v { color:var(--text-secondary); font-size:12px; text-align:right; }
+.drawer {
+  position:fixed; right:0; top:0; bottom:0; width:420px; z-index:20;
+  background:#fff; border-left:1px solid var(--border); box-shadow:-16px 0 36px rgba(31,41,55,.16);
+  transform:translateX(100%); transition:.25s; display:flex; flex-direction:column;
+}
+.drawer.show { transform:translateX(0); }
+.drawer-head { height:58px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; border-bottom:1px solid var(--border); }
+.drawer-head h3 { font-size:16px; }
+.drawer-body { flex:1; overflow:auto; padding:16px 18px; }
+.close { width:28px; height:28px; border-radius:50%; border:1px solid var(--border); background:#fff; color:var(--text-secondary); cursor:pointer; }
+.toast {
+  position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-12px);
+  z-index:80; opacity:0; pointer-events:none; transition:.2s;
+  background:#1f2937; color:#fff; border-radius:var(--radius-md); padding:10px 16px; font-size:12px;
+  box-shadow:0 10px 28px rgba(31,41,55,.25);
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.modal-mask {
+  position:fixed; inset:0; background:rgba(15,23,42,.42); z-index:60;
+  display:none; align-items:center; justify-content:center; padding:24px;
+}
+.modal-mask.show { display:flex; }
+.script-modal {
+  width:min(1320px,96vw); height:min(760px,92vh); background:#fff; border-radius:8px;
+  box-shadow:0 22px 60px rgba(15,23,42,.28); overflow:hidden; display:flex; flex-direction:column;
+}
+.script-head {
+  height:52px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; position:relative;
+}
+.script-head h2 { font-size:24px; font-weight:500; letter-spacing:.04em; }
+.script-head .help { color:#d51b2a; margin-left:10px; }
+.script-head .check { position:absolute; right:64px; top:10px; }
+.script-close { position:absolute; right:18px; top:12px; width:28px; height:28px; border:1px solid #d7dbe3; background:#fff; cursor:pointer; border-radius:4px; }
+.cloud-filters { padding:24px 28px 10px; display:grid; grid-template-columns:repeat(4,1fr); column-gap:44px; row-gap:14px; background:#fff; }
+.cloud-field { display:grid; grid-template-columns:86px 1fr; align-items:center; gap:12px; }
+.cloud-field label { font-size:13px; color:#111827; text-align:right; }
+.cloud-field input,.cloud-field select { height:32px; border:1px solid #cfd6e2; background:#fff; padding:0 10px; font-size:12px; color:#374151; }
+.cloud-toolbar { display:flex; align-items:center; justify-content:space-between; padding:16px 16px 8px; }
+.cloud-left-actions,.cloud-right-actions { display:flex; align-items:center; gap:6px; }
+.square-btn { width:34px; height:32px; border:none; border-radius:3px; cursor:pointer; color:#fff; font-weight:700; }
+.square-btn.refresh { background:#34426a; }
+.square-btn.add { width:auto; padding:0 12px; background:#12bfa5; }
+.square-btn.light { background:#fff; color:#374151; border:1px solid #d8dde6; }
+.cloud-table table { min-width:1280px; }
+.cloud-table th,.cloud-table td { text-align:center; }
+.cloud-op { display:inline-flex; gap:4px; }
+.mini-btn { border:none; border-radius:3px; color:#fff; height:22px; padding:0 7px; font-size:11px; cursor:pointer; }
+.mini-btn.blue { background:#1683e9; }
+.mini-btn.green { background:#19b89b; }
+.mini-btn.red { background:#f15249; }
+.cloud-modal-mask { position:fixed; inset:0; z-index:70; background:rgba(15,23,42,.38); display:none; align-items:center; justify-content:center; }
+.cloud-modal-mask.show { display:flex; }
+.cloud-modal { width:min(1180px,92vw); height:min(760px,90vh); background:#fff; box-shadow:0 20px 60px rgba(15,23,42,.28); display:flex; flex-direction:column; }
+.cloud-modal-head { height:34px; background:#2d4357; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:13px; font-weight:700; }
+.cloud-modal-body { flex:1; overflow:auto; padding:18px 42px 72px; }
+.cloud-modal-body::-webkit-scrollbar { width:8px; }
+.cloud-modal-body::-webkit-scrollbar-thumb { background:#9ca3af; }
+.cloud-form-row { display:grid; grid-template-columns:112px minmax(0,1fr); align-items:start; gap:12px; margin-bottom:12px; }
+.cloud-form-row.with-hint { grid-template-columns:112px minmax(0,1fr) auto; align-items:center; }
+.cloud-form-row label { text-align:right; font-size:13px; color:#111827; padding-top:8px; }
+.cloud-form-row input,.cloud-form-row select,.cloud-form-row textarea { width:100%; border:1px solid #cfd6e2; padding:7px 10px; font-size:12px; color:#374151; background:#fff; }
+.cloud-form-row input,.cloud-form-row select { height:32px; }
+.cloud-form-row textarea { min-height:70px; resize:vertical; font-family:Consolas,var(--font-primary); line-height:1.55; }
+.cloud-hint { font-size:12px; color:#64748b; margin-top:6px; }
+.cloud-radios { display:flex; gap:12px; align-items:center; height:28px; font-size:12px; }
+.cloud-radios label { padding-top:0; display:flex; align-items:center; gap:3px; }
+.cloud-radios input { width:12px; height:12px; }
+.cloud-modal-foot { position:absolute; left:0; right:0; bottom:0; height:56px; background:#edf2f5; border-top:1px solid #d8dde6; display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:0 42px; }
+.cloud-modal-wrap { position:relative; width:min(1180px,92vw); height:min(760px,90vh); }
+.script-body { flex:1; min-height:0; display:grid; grid-template-columns:300px 1fr 170px; background:#eef3f7; }
+.script-left { background:#fff; border-right:1px solid #dce3eb; padding:18px 14px; display:flex; flex-direction:column; min-height:0; }
+.platform-tabs { display:flex; height:36px; border-bottom:1px solid #dce3eb; margin-bottom:14px; }
+.platform-tabs button { flex:1; border:none; background:#fff; cursor:pointer; color:#333; font-size:13px; border-bottom:2px solid transparent; }
+.platform-tabs button.active { color:#1683e9; border-color:#1683e9; }
+.search-row { display:grid; grid-template-columns:1fr 54px; gap:8px; margin-bottom:8px; }
+.search-row input { height:32px; border:1px solid #ccd3de; padding:0 10px; font-size:12px; }
+.search-row button { border:1px solid #ccd3de; background:#f8fafc; cursor:pointer; }
+.note { font-size:12px; color:#555; margin-bottom:7px; }
+.note code { background:#fff1f2; color:#bf1234; padding:1px 4px; border-radius:3px; }
+.script-list { flex:1; min-height:0; overflow:auto; border:1px solid #9cc9df; }
+.script-list::-webkit-scrollbar { width:6px; }
+.script-list::-webkit-scrollbar-thumb { background:#adb8c8; }
+.script-option { padding:7px 9px; font-size:13px; color:#333; cursor:pointer; }
+.script-option:hover { background:#edf6ff; }
+.script-option.active { background:#707070; color:#fff; }
+.script-main { min-width:0; padding:18px 12px; display:grid; grid-template-rows:42px minmax(260px,420px) 132px; align-content:start; }
+.editor-tabs { height:42px; display:flex; align-items:flex-end; }
+.editor-tabs button { height:42px; min-width:90px; border:none; border-right:1px solid #dce3eb; background:#fff; color:#555; cursor:pointer; }
+.editor-tabs button.active { background:#e9eef4; font-weight:700; }
+.code-editor {
+  flex:1; min-height:0; background:#1f1f1f; color:#d8dee9; border:1px solid #2b2b2b;
+  overflow:hidden; display:grid; grid-template-columns:46px 1fr; font-family:Consolas,monospace; font-size:13px; line-height:1.48;
+}
+.line-nos { background:#202020; color:#9ca3af; text-align:right; padding:8px 10px 8px 0; user-select:none; }
+.code-lines { padding:8px 14px; white-space:pre; overflow:auto; }
+.kw { color:#6cb6ff; }
+.fn { color:#dcdcaa; }
+.str { color:#ce9178; }
+.num { color:#b5cea8; }
+.cm { color:#6a9955; }
+.script-form { background:#fff; border:1px solid #dce3eb; border-top:none; padding:12px 14px; display:grid; grid-template-columns:minmax(260px,1fr) auto; gap:12px; align-items:center; }
+.script-form-fields { display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:end; }
+.field { margin-bottom:0; }
+.field label { display:block; font-size:13px; color:#333; margin-bottom:5px; }
+.field input { width:100%; height:32px; border:1px solid #d5dbe5; padding:0 10px; font-size:13px; }
+.form-line { display:flex; align-items:center; gap:14px; height:32px; }
+.radios { display:flex; align-items:center; gap:14px; font-size:13px; color:#333; }
+.default-check { font-size:13px; color:#333; white-space:nowrap; }
+.actions { display:flex; align-items:center; gap:8px; justify-content:flex-end; }
+.script-right { background:#fff; border-left:1px solid #dce3eb; padding:18px 12px; display:grid; grid-template-rows:auto 1fr auto; gap:10px; }
+.right-group { display:flex; flex-direction:column; gap:10px; }
+.right-btn { height:34px; border:1px solid #d8dde6; background:#f7f7f7; color:#333; cursor:pointer; border-radius:2px; }
+.right-btn.orange { background:#f6a313; color:#fff; border-color:#f6a313; font-weight:700; }
+.right-spacer { display:none; }
+@media (max-width:1180px){ .app{grid-template-columns:72px 1fr}.brand div:last-child,.nav-text,.side-foot{display:none}.nav-item{justify-content:center}.metrics{grid-template-columns:repeat(3,1fr)}.work-grid{grid-template-columns:1fr}.script-body{grid-template-columns:260px 1fr 130px} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">G</div><div><h1>兼容性治理后台</h1><p>GameHub Ops Console</p></div></div>
+    <nav class="nav">
+      <button class="nav-item active" onclick="switchModule('plans',this)"><span class="nav-ic">🧩</span><span class="nav-text">PC模拟器云配置管理（复用）</span></button>
+      <button class="nav-item" onclick="switchModule('strategies',this)"><span class="nav-ic">⚙️</span><span class="nav-text">异常修复策略（新增）</span></button>
+      <button class="nav-item" onclick="switchModule('reports',this)"><span class="nav-ic">🛟</span><span class="nav-text">异常上报管理（新增）</span></button>
+    </nav>
+    <div class="side-foot"><div class="k">今日有效上报处理率</div><div class="v">82.4%</div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="title-block"><h2 id="pageTitle">PC模拟器云配置管理</h2><p id="pageSub">管理 PC 模拟器配置分享、GPU分类、通用/推荐与审核状态</p></div>
+      <div class="top-actions"><div class="pill">国内 / 海外 <span>双包</span></div><div class="pill">时间范围 <span>近7天</span></div><button class="btn btn-ghost" onclick="toast('已刷新最新兼容数据')">刷新</button><button class="btn btn-primary" onclick="toast('已导出当前筛选结果')">导出CSV</button></div>
+    </header>
+    <section class="content">
+      <div class="module active" id="plans">
+        <div class="panel">
+          <div class="cloud-filters">
+            <div class="cloud-field"><label>ID</label><input placeholder="ID"></div>
+            <div class="cloud-field"><label>分享码</label><input placeholder="分享码"></div>
+            <div class="cloud-field"><label>用户ID</label><input placeholder="用户ID"></div>
+            <div class="cloud-field"><label>用户名</label><input placeholder="用户名"></div>
+            <div class="cloud-field"><label>游戏</label><input placeholder="游戏"></div>
+            <div class="cloud-field"><label>来源游戏ID</label><input placeholder="来源游戏ID"></div>
+            <div class="cloud-field"><label>来源平台</label><select><option>选择</option><option>Steam</option><option>Epic</option><option>GOG</option></select></div>
+            <div class="cloud-field"><label>GPU</label><input placeholder="GPU"></div>
+            <div class="cloud-field"><label>GPU归类</label><select><option>选择</option><option>Mali</option><option>骁龙8Gen2</option><option>骁龙8Gen4</option></select></div>
+            <div class="cloud-field"><label>标题</label><input placeholder="标题"></div>
+            <div class="cloud-field"><label>官方</label><select><option>选择</option><option>是</option><option>否</option></select></div>
+            <div class="cloud-field"><label>通用</label><select><option>选择</option><option>是</option><option>否</option></select></div>
+            <div class="cloud-field"><label>推荐</label><select><option>选择</option><option>是</option><option>否</option></select></div>
+            <div class="cloud-field"><label>状态</label><select><option>选择</option><option>待审核</option><option>已通过</option><option>已驳回</option><option>已删除</option></select></div>
+            <div class="cloud-field"><label>创建人</label><input placeholder="创建人"></div>
+            <div class="cloud-field"><label>更新人</label><input placeholder="更新人"></div>
+            <div></div><div><button class="btn btn-primary">提交</button> <button class="btn btn-ghost">重置</button></div>
+          </div>
+          <div class="cloud-toolbar">
+            <div class="cloud-left-actions"><button class="square-btn refresh" onclick="toast('已刷新云配置列表')">↻</button><button class="square-btn add" onclick="openCloudModal('新增云配置')">＋ 添加</button></div>
+            <div class="cloud-right-actions"><button class="square-btn light">▦</button><button class="square-btn light">▦⌄</button><button class="square-btn light">↥⌄</button><button class="square-btn light">🔍</button></div>
+          </div>
+          <div class="table-wrap cloud-table"><table><thead><tr><th>分享码</th><th>用户ID</th><th>用户名</th><th>游戏</th><th>来源游戏ID</th><th>来源平台</th><th>GPU</th><th>GPU归类</th><th>状态</th><th>操作</th></tr></thead><tbody>
+            <tr onclick="openCloudModal('编辑云配置')"><td>SCFG##MTMzMTY=</td><td>17843593</td><td>盖世用户ebgd7gmaszm</td><td>-</td><td></td><td>0</td><td>Mali-G925-Immortalis MC12</td><td>Mali</td><td><span class="tag gold">待审核</span></td><td><span class="cloud-op"><button class="mini-btn blue">复制</button><button class="mini-btn green">✎</button><button class="mini-btn red">🗑</button></span></td></tr>
+            <tr onclick="openCloudModal('编辑云配置')"><td>SCFG##MTMzMTU=</td><td>17843593</td><td>盖世用户ebgd7gmaszm</td><td>-</td><td></td><td>0</td><td>Mali-G925-Immortalis MC12</td><td>Mali</td><td><span class="tag green">已通过</span></td><td><span class="cloud-op"><button class="mini-btn blue">复制</button><button class="mini-btn green">✎</button><button class="mini-btn red">🗑</button></span></td></tr>
+            <tr onclick="openCloudModal('编辑云配置')"><td>SCFG##MTMzMTQ=</td><td>17843593</td><td>盖世用户ebgd7gmaszm</td><td>-</td><td></td><td>0</td><td>Mali-G925-Immortalis MC12</td><td>Mali</td><td><span class="tag red">已驳回</span></td><td><span class="cloud-op"><button class="mini-btn blue">复制</button><button class="mini-btn green">✎</button><button class="mini-btn red">🗑</button></span></td></tr>
+            <tr onclick="openCloudModal('编辑云配置')"><td>SCFG##MTMzMTE=</td><td>1279092</td><td>遇见你的蓝色天空</td><td>DmC: Devil May Cry</td><td>220440</td><td>Steam</td><td>Adreno (TM) 740</td><td>骁龙8Gen2</td><td><span class="tag green">已通过</span></td><td><span class="cloud-op"><button class="mini-btn blue">复制</button><button class="mini-btn green">✎</button><button class="mini-btn red">🗑</button></span></td></tr>
+            <tr onclick="openCloudModal('编辑云配置')"><td>SCFG##MTMzMDk=</td><td>15570921</td><td>盖世用户3egllq99so8</td><td>Teardown</td><td>1167630</td><td>Steam</td><td>Adreno (TM) 825</td><td>骁龙8sGen4</td><td><span class="tag gray">已删除</span></td><td><span class="cloud-op"><button class="mini-btn blue">复制</button><button class="mini-btn green">✎</button><button class="mini-btn red">🗑</button></span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="module" id="strategies">
+        <div class="panel">
+          <div class="panel-head"><h3>异常修复策略<span class="sub">点击策略进入脚本配置弹窗</span></h3><button class="btn btn-primary" onclick="openScriptModal('闪退修复')">新建策略</button></div>
+          <div class="filters"><div class="select">异常类型 <span>全部</span></div><div class="input">游戏 <span>全部</span></div><div class="input">处理器 <span>全部</span></div><div class="select">需重启 <span>是</span></div><div class="select">状态 <span>启用</span></div><div class="filter-actions"><button class="btn btn-primary">查询</button><button class="btn btn-ghost">重置</button></div></div>
+          <div class="table-wrap"><table><thead><tr><th>策略ID</th><th>修复类型</th><th>策略说明</th><th>脚本来源</th><th>适用范围</th><th>成功率</th><th>状态</th><th>操作</th></tr></thead><tbody>
+            <tr onclick="openScriptModal('闪退修复')"><td>STR_101</td><td><span class="tag red">闪退修复</span></td><td>启动即退、进程被杀场景</td><td>steam 默认脚本</td><td>Top 20 游戏</td><td>51.9%</td><td><span class="status"><i class="dot"></i>启用</span></td><td><button class="btn btn-ghost">配置脚本</button></td></tr>
+            <tr onclick="openScriptModal('黑屏修复')"><td>STR_102</td><td><span class="tag blue">黑屏修复</span></td><td>有声无画面、渲染后端异常</td><td>steam 默认脚本</td><td>Vulkan 异常机型</td><td>58.7%</td><td><span class="status"><i class="dot"></i>启用</span></td><td><button class="btn btn-ghost">配置脚本</button></td></tr>
+            <tr onclick="openScriptModal('花屏修复')"><td>STR_103</td><td><span class="tag gold">花屏修复</span></td><td>贴图错乱、画面异常场景</td><td>steam 默认脚本</td><td>贴图错乱上报</td><td>43.5%</td><td><span class="status"><i class="dot gold"></i>观察</span></td><td><button class="btn btn-ghost">配置脚本</button></td></tr>
+            <tr onclick="openScriptModal('xx修复')"><td>STR_104</td><td><span class="tag gray">xx修复</span></td><td>预留兼容问题脚本位</td><td>steam 默认脚本</td><td>待配置</td><td>-</td><td><span class="status"><i class="dot red"></i>停用</span></td><td><button class="btn btn-ghost">配置脚本</button></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="module" id="reports">
+        <div class="panel"><div class="panel-head"><h3>异常上报管理<span class="sub">排查机型、游戏与内核版本适配问题</span></h3><button class="btn btn-primary" onclick="toast('已批量标记处理中')">批量处理</button></div><div class="filters"><div class="input">用户ID <span>输入搜索</span></div><div class="input">游戏ID <span>1245620</span></div><div class="input">机型 <span>全部</span></div><div class="select">异常类型 <span>全部</span></div><div class="select">处理状态 <span>待处理</span></div><div class="filter-actions"><button class="btn btn-primary">查询</button><button class="btn btn-ghost">导出</button></div></div><div class="table-wrap"><table><thead><tr><th>上报ID</th><th>用户ID</th><th>游戏</th><th>机型</th><th>异常类型</th><th>已尝试方案</th><th>内核版本</th><th>渠道包</th><th>上报时间</th><th>状态</th><th>操作</th></tr></thead><tbody><tr onclick="openDrawer('RPT_9081 上报详情','用户反馈加载后仍无法进入游戏，已附带机型、处理器、游戏ID、内核版本。')"><td>RPT_9081</td><td>U_18473</td><td>艾尔登法环</td><td>Redmi K70 Pro</td><td><span class="tag gold">加载过长</span></td><td>极致兼容</td><td>6.0.2</td><td>official</td><td>2026-07-01 21:30</td><td><span class="status"><i class="dot red"></i>待处理</span></td><td><button class="btn btn-ghost">详情</button></td></tr><tr onclick="openDrawer('RPT_9078 上报详情','海外包 GooglePlay 黑屏上报，疑似渲染后端不兼容。')"><td>RPT_9078</td><td>G_55120</td><td>GTA5</td><td>Pixel 8 Pro</td><td><span class="tag blue">游戏黑屏</span></td><td>官方推荐</td><td>6.0.2</td><td>GooglePlay</td><td>2026-07-01 20:44</td><td><span class="status"><i class="dot gold"></i>处理中</span></td><td><button class="btn btn-ghost">详情</button></td></tr><tr onclick="openDrawer('RPT_9066 上报详情','花屏问题集中于同处理器机型，建议新增策略。')"><td>RPT_9066</td><td>U_27111</td><td>赛博朋克2077</td><td>vivo X100</td><td><span class="tag red">游戏花屏</span></td><td>玩家分享</td><td>6.0.1</td><td>vivo</td><td>2026-07-01 19:08</td><td><span class="status"><i class="dot red"></i>待处理</span></td><td><button class="btn btn-ghost">详情</button></td></tr></tbody></table></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+<aside class="drawer" id="drawer"><div class="drawer-head"><h3 id="drawerTitle">详情</h3><button class="close" onclick="closeDrawer()">✕</button></div><div class="drawer-body"><div class="detail-card"><div id="drawerDesc" style="font-size:13px;color:var(--text-secondary);line-height:1.7"></div></div><div class="detail-title"><h4>关键属性</h4><span class="tag gold">自动带入</span></div><div class="detail-card"><div class="detail-row"><span class="k">当前机型</span><span class="v">Redmi K70 Pro</span></div><div class="detail-row"><span class="k">处理器</span><span class="v">骁龙 8 Gen3</span></div><div class="detail-row"><span class="k">APP版本</span><span class="v">6.0.2</span></div><div class="detail-row"><span class="k">内核版本</span><span class="v">6.0.2</span></div><div class="detail-row"><span class="k">渠道包</span><span class="v">official</span></div></div><div class="detail-title"><h4>处理动作</h4></div><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="toast('已保存处理结果')">保存处理</button><button class="btn btn-ghost" onclick="toast('已复制为新策略草稿')">复制为策略</button></div></div></aside>
+<div class="modal-mask" id="scriptMask">
+  <div class="script-modal">
+    <div class="script-head"><h2>脚本化列表 <span class="help">（帮助文档）</span></h2><button class="btn btn-ghost check" onclick="toast('已检测所有脚本')">检测所有脚本</button><button class="script-close" onclick="closeScriptModal()">✕</button></div>
+    <div class="script-body">
+      <div class="script-left">
+        <div class="platform-tabs"><button class="active">steam</button><button>epic</button><button>gog</button></div>
+        <div class="search-row"><input placeholder="输入脚本名/source_id/gameid/游戏名"><button>搜索</button></div>
+        <div class="note">注意：<code>source_id</code> 表示来源平台ID，例如 steam 游戏 ID.</div>
+        <div class="script-list" id="scriptList">
+          <div class="script-option active" onclick="selectScriptOption(this,'闪退修复')">闪退修复</div>
+          <div class="script-option" onclick="selectScriptOption(this,'黑屏修复')">黑屏修复</div>
+          <div class="script-option" onclick="selectScriptOption(this,'花屏修复')">花屏修复</div>
+          <div class="script-option" onclick="selectScriptOption(this,'xx修复')">xx修复</div>
+        </div>
+      </div>
+      <div class="script-main">
+        <div class="editor-tabs"><button class="active">脚本代码</button><button>预览结果</button></div>
+        <div class="code-editor">
+          <div class="line-nos">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29</div>
+          <div class="code-lines"><span class="kw">if</span> (gpuVendor === <span class="str">"Qualcomm"</span>) {
+  <span class="kw">if</span> (gpuVersion &gt;= <span class="num">800</span> &amp;&amp; gpuVersion &lt; <span class="num">900</span>) {
+    <span class="kw">switch</span> (gpuVersion) {
+      <span class="kw">case</span> <span class="num">840</span>:
+        <span class="fn">fixDefaultUnknown840</span>();
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">850</span>:
+        <span class="fn">fixDefaultUnknown850</span>();
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">830</span>:
+        <span class="fn">fixDefaultUnknown830</span>();
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">825</span>:
+        <span class="fn">fixDefaultUnknown825</span>();
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">829</span>:
+        <span class="fn">fixDefaultUnknown829</span>();
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">810</span>:
+        <span class="fn">fixDefaultUnknown7sxx</span>();
+        <span class="kw">break</span>;
+      <span class="kw">default</span>:
+        <span class="fn">fixDefaultUnknown8xx</span>();
+    }
+  } <span class="kw">else</span> {
+    <span class="kw">switch</span> (gpuVersion) {
+      <span class="kw">case</span> <span class="num">732</span>:
+        <span class="fn">fixDefaultUnknown7sxx</span>();
+        <span class="kw">break</span>;</div>
+        </div>
+        <div class="script-form">
+          <div class="script-form-fields">
+            <div class="field"><label>脚本名称：</label><input id="scriptName" value="闪退修复"></div>
+            <div class="form-line"><div class="radios"><span>状态：</span><label><input type="radio" name="scriptStatus" checked> 启用</label><label><input type="radio" name="scriptStatus"> 隐藏</label></div></div>
+            <label class="default-check"><input type="checkbox" checked> 设为默认</label>
+          </div>
+          <div class="actions"><button class="btn btn-primary" onclick="toast('脚本已保存')">保存脚本</button><button class="btn btn-danger" onclick="toast('删除前请二次确认')">删除脚本</button></div>
+        </div>
+      </div>
+      <div class="script-right"><div class="right-group"><button class="right-btn">0个关联游戏</button><button class="right-btn orange" onclick="toast('测试脚本通过')">测试脚本</button></div><div></div><div class="right-group"><button class="right-btn">插入函数</button><button class="right-btn">管理函数</button><button class="right-btn">修改记录</button></div></div>
+    </div>
+  </div>
+</div>
+<div class="cloud-modal-mask" id="cloudMask">
+  <div class="cloud-modal-wrap">
+    <div class="cloud-modal">
+      <div class="cloud-modal-head"><span id="cloudTitle">编辑</span><button class="close" onclick="closeCloudModal()">✕</button></div>
+      <div class="cloud-modal-body">
+        <div class="cloud-form-row"><label>用户ID:</label><select><option></option><option>17843593</option><option>1279092</option></select></div>
+        <div class="cloud-form-row with-hint"><label>游戏ID:</label><select><option></option><option>220440</option><option>1167630</option></select><div class="cloud-hint">通用配置可不绑定游戏；非通用配置请绑定游戏或填写来源游戏映射。</div></div>
+        <div class="cloud-form-row"><label>来源游戏ID:</label><input value=""></div>
+        <div class="cloud-form-row"><label>来源平台:</label><select><option>未设置</option><option>Steam</option><option>Epic</option><option>GOG</option></select></div>
+        <div class="cloud-form-row"><label>标题:</label><input value="qaz"></div>
+        <div class="cloud-form-row"><label>GPU:</label><input value="Mali-G925-Immortalis MC12"></div>
+        <div class="cloud-form-row"><label>标题多语言参数:</label><textarea>{
+  "zh": "qaz"
+}</textarea><div class="cloud-hint">请输入合法的 JSON</div></div>
+        <div class="cloud-form-row"><label>官方:</label><div class="cloud-radios"><label><input type="radio" name="official"> 是</label><label><input type="radio" name="official" checked> 否</label></div></div>
+        <div class="cloud-form-row"><label>通用:</label><div class="cloud-radios"><label><input type="radio" name="common" checked> 是</label><label><input type="radio" name="common"> 否</label></div></div>
+        <div class="cloud-form-row"><label>推荐:</label><div class="cloud-radios"><label><input type="radio" name="recommend"> 是</label><label><input type="radio" name="recommend" checked> 否</label></div></div>
+        <div class="cloud-form-row"><label>配置内容:</label><textarea style="min-height:220px">{
+  "container_id": 2,
+  "component_ids": [312, 384, 444],
+  "translations": {
+    "box64": {
+      "id": "game_recommend_id",
+      "name": "游戏预设",
+      "CallRet": 1,
+      "Wait": 0,
+      "WeakBarrier": 0
+    },
+    "fex": {
+      "mode": "compat",
+      "gpuFix": true
+    }
+  }
+}</textarea><div class="cloud-hint">请输入合法的 JSON</div></div>
+        <div class="cloud-form-row"><label>状态:</label><div class="cloud-radios"><label><input type="radio" name="cloudStatus" checked> 待审核</label><label><input type="radio" name="cloudStatus"> 已通过</label><label><input type="radio" name="cloudStatus"> 已驳回</label><label><input type="radio" name="cloudStatus"> 已删除</label></div></div>
+      </div>
+      <div class="cloud-modal-foot"><button class="btn btn-primary" onclick="toast('云配置已保存')">确定</button><button class="btn btn-ghost" onclick="closeCloudModal()">重置</button></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const titles={plans:['PC模拟器云配置管理','管理 PC 模拟器配置分享、GPU分类、通用/推荐与审核状态'],strategies:['异常修复策略','点击策略进入脚本配置弹窗，调整具体修复参数'],reports:['异常上报管理','处理用户上报的机型、游戏与内核适配问题']};
+function switchModule(id,btn){document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));btn.classList.add('active');document.getElementById('pageTitle').textContent=titles[id][0];document.getElementById('pageSub').textContent=titles[id][1];closeDrawer();}
+function openDrawer(title,desc){document.getElementById('drawerTitle').textContent=title;document.getElementById('drawerDesc').textContent=desc;document.getElementById('drawer').classList.add('show');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('show');}
+function openCloudModal(title){document.getElementById('cloudTitle').textContent=title;document.getElementById('cloudMask').classList.add('show');}
+function closeCloudModal(){document.getElementById('cloudMask').classList.remove('show');}
+function openScriptModal(name){document.getElementById('scriptMask').classList.add('show');setScriptName(name);document.querySelectorAll('.script-option').forEach(o=>o.classList.toggle('active',o.textContent.trim()===name));}
+function closeScriptModal(){document.getElementById('scriptMask').classList.remove('show');}
+function selectScriptOption(el,name){document.querySelectorAll('.script-option').forEach(o=>o.classList.remove('active'));el.classList.add('active');setScriptName(name);}
+function setScriptName(name){document.getElementById('scriptName').value=name;}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2200);}
+</script>
+</body>
+</html>

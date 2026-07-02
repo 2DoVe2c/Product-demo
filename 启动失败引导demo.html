@@ -114,29 +114,66 @@ body {
   background:rgba(255,204,67,.1); padding:5px 14px; border-radius:var(--radius-full); align-self:flex-start;
 }
 .detect-card {
-  position:absolute; left:50%; bottom:76px; transform:translateX(-50%);
-  width:max-content; min-width:210px; background:rgba(26,26,26,.78); border:1px solid rgba(255,255,255,.08);
-  border-radius:var(--radius-md); box-shadow:0 8px 24px rgba(0,0,0,.24); overflow:hidden;
+  position:absolute; top:44px; right:26px; transform:none;
+  width:310px; background:rgba(26,26,26,.88); border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-lg); box-shadow:0 12px 32px rgba(0,0,0,.42); overflow:visible;
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
 }
 .detect-title {
-  display:flex; align-items:center; justify-content:space-between; padding:10px 12px;
-  cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; justify-content:space-between; padding:11px 12px;
+  cursor:pointer; transition:all .2s; border-bottom:1px solid rgba(255,255,255,.06);
 }
 .detect-title:hover { background:rgba(255,204,67,.06); }
 .detect-title .dt { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--text-secondary); }
 .detect-title .dt::before { content:''; width:7px; height:7px; border-radius:50%; background:#ff8aa0; box-shadow:0 0 10px rgba(255,86,120,.6); }
 .detect-title .ds { font-size:10px; color:var(--brand-gold); }
-.detect-list { display:none; flex-direction:column; gap:6px; padding:0 12px 10px; }
+.detect-list { display:none; flex-direction:column; gap:6px; padding:10px 12px; }
 .detect-card.open .detect-list { display:flex; }
 .detect-item {
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius-sm); padding:7px 9px; cursor:pointer; transition:all .2s;
+  border-radius:var(--radius-md); padding:8px 9px; cursor:pointer; transition:all .2s;
 }
 .detect-item:hover { border-color:rgba(255,204,67,.45); background:rgba(255,204,67,.07); }
 .detect-item .name { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-secondary); }
 .detect-item .dot { width:6px; height:6px; border-radius:50%; background:#ff8aa0; box-shadow:0 0 10px rgba(255,86,120,.6); }
 .detect-item .state { font-size:10px; color:var(--brand-gold); white-space:nowrap; }
+.detect-panel { display:none; border-top:1px solid rgba(255,255,255,.06); padding:11px 12px; }
+.detect-panel.show { display:block; }
+.detect-panel-row { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:34px; }
+.detect-panel-main { min-width:0; flex:1; display:flex; align-items:center; gap:7px; }
+.detect-panel-copy { min-width:0; display:flex; flex-direction:column; gap:2px; align-items:flex-start; }
+.detect-panel-back {
+  width:18px; height:18px; border:none; border-radius:50%; background:rgba(255,255,255,.06);
+  color:var(--brand-gold); font-size:13px; line-height:18px; cursor:pointer; font-family:var(--font-primary); flex-shrink:0;
+}
+.detect-panel-title { min-width:0; font-size:12px; font-weight:600; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.detect-panel-desc { font-size:10px; color:var(--text-muted); line-height:1.2; white-space:nowrap; }
+.mini-plan-card {
+  position:relative; min-width:0; flex:1; cursor:pointer;
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-md); padding:7px 8px; transition:all .2s;
+}
+.mini-plan-card:hover { border-color:rgba(255,204,67,.45); background:rgba(255,204,67,.07); }
+.mini-plan-card .mini-plan-name::after { content:'⌄'; margin-left:auto; color:var(--brand-gold); font-size:10px; }
+.mini-plan-menu {
+  display:none; position:absolute; left:0; right:0; top:calc(100% + 4px); z-index:80;
+  min-width:100%; background:#25242a; border:1px solid rgba(255,255,255,.1); border-radius:var(--radius-md); overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.36);
+}
+.mini-plan-menu.open { display:block; }
+.mini-plan-option { padding:7px 8px; font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:6px; }
+.mini-plan-option:hover { background:rgba(255,255,255,.08); }
+.mini-plan-name { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-secondary); white-space:nowrap; }
+.mini-badge { font-size:9px; padding:1px 5px; border-radius:var(--radius-sm); font-weight:500; flex-shrink:0; }
+.mini-badge.red { background:rgba(255,86,120,.15); color:#ff8aa0; }
+.mini-badge.green { background:rgba(51,216,164,.14); color:var(--brand-green); }
+.mini-badge.blue { background:rgba(51,143,235,.18); color:#7fc1ff; }
+.detect-action {
+  width:auto; border:none; border-radius:var(--radius-sm); padding:5px 8px;
+  background:linear-gradient(135deg,#ffcc43,#ffb600); color:#1a1a1a;
+  font-family:var(--font-primary); font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; flex-shrink:0;
+}
 .progress {
   position:absolute; left:50%; bottom:34px; transform:translateX(-50%);
   width:280px; height:4px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden;
@@ -529,10 +566,8 @@ body {
 
 <div class="stepbar">
   <button id="t1" class="active" onclick="goLoading()">① 启动检测中（加载超过3分钟或进游戏1分钟内进程被杀）</button>
-  <button id="t2" onclick="goDiagnose()">② 启动失败引导弹窗</button>
-  <button id="t3" onclick="goRestart()">③ 切换配置·重启反馈</button>
-  <button id="t4" onclick="goReport()">④ 游戏详情页-上报异常</button>
-  <button id="t5" onclick="goGameView()">⑤ 游戏内菜单-上报异常</button>
+  <button id="t3" onclick="goRestart()">② 切换配置·重启反馈</button>
+  <button id="t5" onclick="goGameView()">③ 游戏内菜单-上报异常</button>
 </div>
 
 <div class="phone">
@@ -555,9 +590,42 @@ body {
       <div class="loading-info">
         <div class="detect-card" id="detectCard">
           <div class="detect-title" onclick="toggleDetectDrawer()"><span class="dt">游戏启动异常</span><span class="ds">查看</span></div>
-          <div class="detect-list">
-            <div class="detect-item" onclick="goDiagnose()"><div class="name"><span class="dot"></span>加载时间过长</div><div class="state">去处理</div></div>
-            <div class="detect-item" onclick="goDiagnose()"><div class="name"><span class="dot"></span>游戏内异常</div><div class="state">去处理</div></div>
+          <div class="detect-list" id="detectList">
+            <div class="detect-item" onclick="openDetectPanel('load')"><div class="name"><span class="dot"></span>切换兼容性方案</div><div class="state">查看</div></div>
+            <div class="detect-item" onclick="openDetectPanel('crash')"><div class="name"><span class="dot"></span>游戏闪退</div><div class="state">查看</div></div>
+            <div class="detect-item" onclick="openDetectPanel('black')"><div class="name"><span class="dot"></span>游戏黑屏</div><div class="state">查看</div></div>
+            <div class="detect-item" onclick="openDetectPanel('glitch')"><div class="name"><span class="dot"></span>游戏花屏</div><div class="state">查看</div></div>
+            <div class="detect-item" onclick="openDetectPanel('report')"><div class="name"><span class="dot"></span>问题上报</div><div class="state">查看</div></div>
+          </div>
+          <div class="detect-panel" id="detectPanelLoad">
+            <div class="detect-panel-row">
+              <div class="detect-panel-main"><button class="detect-panel-back" onclick="backDetectList()">‹</button><div class="mini-plan-card" onclick="toggleMiniPlanMenu(event)"><div class="mini-plan-name"><span id="miniPlanName">极致兼容</span> <span class="mini-badge red" id="miniPlanBadge">保障启动</span></div><div class="mini-plan-menu" id="miniPlanMenu"><div class="mini-plan-option" onclick="selectMiniPlan(event,'极致兼容','保障启动','red')">极致兼容 <span class="mini-badge red">保障启动</span></div><div class="mini-plan-option" onclick="selectMiniPlan(event,'官方推荐','官方算法','green')">官方推荐 <span class="mini-badge green">官方算法</span></div><div class="mini-plan-option" onclick="selectMiniPlan(event,'玩家分享','同GPU','blue')">玩家分享 <span class="mini-badge blue">同GPU</span></div></div></div></div>
+              <button class="detect-action" onclick="goRestart(document.getElementById('miniPlanName').textContent+'方案')">切换方案</button>
+            </div>
+          </div>
+          <div class="detect-panel" id="detectPanelCrash">
+            <div class="detect-panel-row">
+              <div class="detect-panel-main"><button class="detect-panel-back" onclick="backDetectList()">‹</button><div class="detect-panel-copy"><div class="detect-panel-title">游戏闪退</div><div class="detect-panel-desc">自动调整2~3个关键参数后重启游戏</div></div></div>
+              <button class="detect-action" onclick="goRestart('游戏闪退修复')">一键修复</button>
+            </div>
+          </div>
+          <div class="detect-panel" id="detectPanelBlack">
+            <div class="detect-panel-row">
+              <div class="detect-panel-main"><button class="detect-panel-back" onclick="backDetectList()">‹</button><div class="detect-panel-copy"><div class="detect-panel-title">游戏黑屏</div><div class="detect-panel-desc">自动调整2~3个关键参数后重启游戏</div></div></div>
+              <button class="detect-action" onclick="goRestart('游戏黑屏修复')">一键修复</button>
+            </div>
+          </div>
+          <div class="detect-panel" id="detectPanelGlitch">
+            <div class="detect-panel-row">
+              <div class="detect-panel-main"><button class="detect-panel-back" onclick="backDetectList()">‹</button><div class="detect-panel-copy"><div class="detect-panel-title">游戏花屏</div><div class="detect-panel-desc">自动调整2~3个关键参数后重启游戏</div></div></div>
+              <button class="detect-action" onclick="goRestart('游戏花屏修复')">一键修复</button>
+            </div>
+          </div>
+          <div class="detect-panel" id="detectPanelReport">
+            <div class="detect-panel-row">
+              <div class="detect-panel-main"><button class="detect-panel-back" onclick="backDetectList()">‹</button><div class="detect-panel-copy"><div class="detect-panel-title">问题上报</div><div class="detect-panel-desc">上报后官方将排查该适配问题</div></div></div>
+              <button class="detect-action" onclick="toast('✅ 已上报问题，官方将尽快处理')">一键上报</button>
+            </div>
           </div>
         </div>
         <div class="loading-status">
@@ -573,152 +641,6 @@ body {
   <!-- 蒙层 -->
   <div class="mask" id="mask" onclick="closeAll()"></div>
 
-  <!-- 状态②：单栏引导弹窗 -->
-  <div class="sheet" id="diagSheet">
-    <button class="close-x" onclick="closeAll()">✕</button>
-
-    <!-- 头部 -->
-    <div class="sheet-head">
-      <div class="diag-head">
-        <div class="diag-icon">⚠️</div>
-        <div>
-          <h2>检测到游戏启动异常</h2>
-          <p>可能是配置与机型不适配</p>
-        </div>
-      </div>
-      <div class="diag-game-tag">🎮 艾尔登法环 · 当前机型 Redmi K70 Pro</div>
-    </div>
-
-    <!-- 滚动主体 -->
-    <div class="sheet-body">
-      <!-- 推荐配置方案 -->
-      <div class="sec-title">
-        推荐配置方案
-        <span class="q" onclick="openSub('smartTip')">?</span>
-        <span class="more">选择后一键重启</span>
-      </div>
-
-      <div class="plan selected" data-plan="1" onclick="selectPlan(this)">
-        <div class="plan-top">
-          <div class="plan-name">方案 1 · 极致兼容 <span class="badge hot">保障启动</span></div>
-          <div class="plan-radio"></div>
-        </div>
-        <div class="plan-meta">
-          <div><span class="k">同机型通过率</span><span class="v">97%</span></div>
-          <div><span class="k">应用人数</span><span class="v">8,756</span></div>
-          <div><span class="k">平均帧率</span><span class="v gold">40 FPS</span></div>
-          <div><span class="k">稳定时长</span><span class="v">＞3 小时</span></div>
-        </div>
-      </div>
-
-      <button class="btn-more-plans" onclick="this.nextElementSibling.classList.toggle('open');this.textContent=this.nextElementSibling.classList.contains('open')?'收起 ▲':'查看更多方案 ▼'">查看更多方案 ▼</button>
-      <div class="more-plans">
-        <div class="plan" data-plan="2" onclick="selectPlan(this)">
-          <div class="plan-top">
-            <div class="plan-name">方案 2 · 官方推荐 <span class="badge official">官方算法</span></div>
-            <div class="plan-radio"></div>
-          </div>
-          <div class="plan-meta">
-            <div><span class="k">同机型通过率</span><span class="v">92%</span></div>
-            <div><span class="k">应用人数</span><span class="v">1.2 万</span></div>
-            <div><span class="k">平均帧率</span><span class="v gold">58 FPS</span></div>
-            <div><span class="k">稳定时长</span><span class="v">＞2 小时</span></div>
-          </div>
-        </div>
-
-        <div class="plan" data-plan="3" onclick="selectPlan(this)">
-          <div class="plan-top">
-            <div class="plan-name">方案 3 · 玩家分享 <span class="badge community">同处理器</span></div>
-            <div class="plan-radio"></div>
-          </div>
-          <div class="plan-meta">
-            <div><span class="k">同机型通过率</span><span class="v">88%</span></div>
-            <div><span class="k">应用人数</span><span class="v">3,142</span></div>
-            <div><span class="k">平均帧率</span><span class="v gold">52 FPS</span></div>
-            <div><span class="k">稳定时长</span><span class="v">约 1 小时</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 按现象自助排查 -->
-      <div class="sec-title mt">
-        按现象自助排查
-        <span class="q" onclick="openSub('sceneTip')">?</span>
-      </div>
-      <div class="scene-row">
-        <div class="scene" onclick="openScene('黑屏')"><div class="emo">⬛</div><div class="t">黑屏</div><div class="d">有声无画面</div></div>
-        <div class="scene" onclick="openScene('花屏')"><div class="emo">🌈</div><div class="t">花屏</div><div class="d">画面错乱</div></div>
-        <div class="scene" onclick="openScene('闪退')"><div class="emo">💥</div><div class="t">闪退</div><div class="d">启动即退</div></div>
-      </div>
-
-    </div>
-
-    <!-- 底部固定操作 -->
-    <div class="sheet-foot">
-      <button class="btn btn-primary" onclick="goRestart()">应用方案 1 · 切换并重启</button>
-      <button class="btn btn-ghost" onclick="toast('⚙️ 跳转到 PC 引擎设置页')">手动调整</button>
-    </div>
-  </div>
-
-  <!-- 二级：场景说明 -->
-  <div class="subsheet" id="sceneSheet">
-    <h3 id="sceneTitle">黑屏 · 排查指引</h3>
-    <div class="sd">通常只需调整下面 2~3 个关键项，逐项尝试即可</div>
-    <div id="sceneParams"></div>
-    <div class="sub-foot"><button class="btn btn-ghost" style="flex:1" onclick="closeSub('sceneSheet')">返回</button></div>
-  </div>
-
-  <!-- 二级：推荐配置说明 -->
-  <div class="subsheet" id="smartTip">
-    <h3>推荐配置来源</h3>
-    <div class="sd">三种配置方案来源，覆盖不同适配场景</div>
-    <div class="param-item"><div class="param-num">1</div><div class="param-text">
-      <div class="pn">极致兼容方案</div>
-      <div class="pd">官方针对该机型兼容性极致适配的配置，牺牲画质和帧率来保证启动成功率。</div></div></div>
-    <div class="param-item"><div class="param-num">2</div><div class="param-text">
-      <div class="pn">官方算法方案</div>
-      <div class="pd">官方针对该机型平衡适配的配置，保证稳定运行时长和帧率表现的推荐。</div></div></div>
-    <div class="param-item"><div class="param-num">3</div><div class="param-text">
-      <div class="pn">同处理器玩家分享</div>
-      <div class="pd">与你相同处理器的玩家调试成功后上报的配置，命中率高、贴近真实机型表现。</div></div></div>
-    <div class="sub-foot"><button class="btn btn-ghost" style="flex:1" onclick="closeSub('smartTip')">我知道了</button></div>
-  </div>
-
-  <!-- 二级：按现象排查说明 -->
-  <div class="subsheet" id="sceneTip">
-    <h3>按异常现象排查</h3>
-    <div class="sd">根据出现异常现象，调整相关参数</div>
-    <div class="param-item"><div class="param-num">✓</div><div class="param-text">
-      <div class="pn">几十个配置项里，真正影响启动的通常只有 2~4 个</div>
-      <div class="pd">按照黑屏 / 花屏 / 闪退调整对应参数，不必摸索全部选项</div></div></div>
-    <div style="margin-top:14px;margin-bottom:6px;font-size:12px;font-weight:600;color:var(--text-secondary)">图文 / 视频教程</div>
-    <div class="tutorial-row">
-      <div class="tutorial" onclick="closeSub('sceneTip');toast('▶️ 打开视频教程：3 分钟搞定启动')">
-        <div class="ic video">▶️</div><div><div class="tt">视频教程</div><div class="td">3 分钟搞定</div></div>
-      </div>
-      <div class="tutorial" onclick="closeSub('sceneTip');toast('📖 打开图文教程：配置项逐条详解')">
-        <div class="ic doc">📖</div><div><div class="tt">图文教程</div><div class="td">配置项详解</div></div>
-      </div>
-    </div>
-    <div class="sub-foot"><button class="btn btn-ghost" style="flex:1" onclick="closeSub('sceneTip')">我知道了</button></div>
-  </div>
-
-  <!-- 二级：手动调整（跳转 PC 模拟器设置页） -->
-  <div class="subsheet" id="configPage">
-    <h3>PC 模拟器设置页 · 手动调整</h3>
-    <div class="sd">标 ⭐ 为关键项，每项均有说明（点「?」查看）</div>
-    <div class="param-item"><div class="param-num">⭐</div><div class="param-text">
-      <div class="pn">图形渲染后端</div><div class="pv">当前：Vulkan ＞ 可选 OpenGL / DX11</div><div class="pd">黑屏时优先切换此项</div></div></div>
-    <div class="param-item"><div class="param-num">⭐</div><div class="param-text">
-      <div class="pn">显存分配</div><div class="pv">当前：4096 MB</div><div class="pd">花屏 / 贴图错乱时调整</div></div></div>
-    <div class="param-item"><div class="param-num">⭐</div><div class="param-text">
-      <div class="pn">CPU 转译模式</div><div class="pv">当前：动态重编译</div><div class="pd">闪退时尝试切换为兼容模式</div></div></div>
-    <div class="sub-foot">
-      <button class="btn btn-ghost" style="flex:1" onclick="closeSub('configPage')">返回</button>
-      <button class="btn btn-primary" onclick="closeSub('configPage');goRestart()">保存并重启</button>
-    </div>
-  </div>
-
   <!-- 状态③：重启反馈 -->
   <div class="restart-wrap" id="restartWrap">
     <div class="restart-left">
@@ -726,11 +648,11 @@ body {
       <div class="success-ring" id="successRing" style="display:none">✓</div>
     </div>
     <div class="restart-right">
-      <h2 id="restartTitle">正在应用新配置并重启…</h2>
+      <h2 id="restartTitle">正在应用配置修改</h2>
       <div class="applied">
         <div class="val" id="appliedPlan">方案 1 · 极致兼容</div>
       </div>
-      <div class="substep" id="restartStep">⏳ 正在写入兼容层参数…</div>
+      <div class="substep" id="restartStep" style="display:none"></div>
     </div>
   </div>
 
@@ -801,7 +723,7 @@ body {
         <div class="drawer-label">以下信息将自动附带上报，官方适配团队会针对性排查。</div>
         <div class="info-grid">
           <div class="info-row"><span class="ik">当前机型</span><span class="iv">Redmi K70 Pro</span></div>
-          <div class="info-row"><span class="ik">处理器</span><span class="iv">骁龙 8 Gen3</span></div>
+          <div class="info-row"><span class="ik">GPU</span><span class="iv">Adreno (TM) 830</span></div>
           <div class="info-row"><span class="ik">游戏 ID</span><span class="iv">#1245620</span></div>
           <div class="info-row"><span class="ik">内核版本</span><span class="iv">6.0.2</span></div>
           <div class="info-row"><span class="ik">已尝试方案</span><span class="iv">方案 1 · 极致兼容</span></div>
@@ -816,79 +738,11 @@ body {
             </div>
           </div>
         </div>
-        <div class="report-desc">上报后官方将在 1~3 个工作日内排查该机型与游戏的适配问题。</div>
+        <div class="report-desc">上报后官方将尽快排查该适配问题</div>
       </div>
       <div class="ingame-panel-foot">
         <button class="btn btn-primary" style="width:100%;background:linear-gradient(135deg,#338feb,#0063b5);color:#fff" onclick="toast('✅ 已上报成功，官方将在 1~3 个工作日内处理')">确认上报</button>
       </div>
-    </div>
-  </div>
-
-  <!-- 状态④：更多菜单浮层 -->
-  <div class="settings-overlay" id="settingsOverlay">
-    <div class="menu-modal">
-      <div class="menu-modal-head">
-        <h3>更多菜单</h3>
-      </div>
-      <div class="menu-grid">
-        <div class="menu-item" onclick="toast('⚙️ 跳转到 PC 引擎设置页')">
-          <div class="menu-ic">⚙️</div><div class="menu-label">PC引擎设置</div>
-        </div>
-        <div class="menu-item" onclick="document.getElementById('reportDrawer').classList.add('show')">
-          <div class="menu-ic report">🛟</div><div class="menu-label">上报异常</div>
-        </div>
-        <div class="menu-item" onclick="toast('🔗 分享')">
-          <div class="menu-ic">🔗</div><div class="menu-label">分享</div>
-        </div>
-        <div class="menu-item" onclick="toast('🖥️ 添加到桌面')">
-          <div class="menu-ic">🖥️</div><div class="menu-label">添加到桌面</div>
-        </div>
-        <div class="menu-divider"></div>
-        <div class="menu-item" onclick="toast('🔄 版本切换')">
-          <div class="menu-ic">🔄</div><div class="menu-label">版本切换</div>
-        </div>
-        <div class="menu-item" onclick="toast('🗑️ 移除游戏')">
-          <div class="menu-ic">🗑️</div><div class="menu-label">移除游戏</div>
-        </div>
-        <div class="menu-item" onclick="toast('✏️ 修改信息')">
-          <div class="menu-ic">✏️</div><div class="menu-label">修改信息</div>
-        </div>
-        <div class="menu-item" onclick="toast('🎮 按键与布局')">
-          <div class="menu-ic">🎮</div><div class="menu-label">按键与布局</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 状态④：一键上报右侧抽屉 -->
-  <div class="drawer" id="reportDrawer">
-    <div class="drawer-head">
-      <h3>上报异常</h3>
-      <button class="close-btn" onclick="closeDrawer()">✕</button>
-    </div>
-    <div class="drawer-body">
-      <div class="drawer-label">以下信息将自动附带上报，官方适配团队会针对性排查并下发适配方案。</div>
-      <div class="info-grid">
-        <div class="info-row"><span class="ik">当前机型</span><span class="iv">Redmi K70 Pro</span></div>
-        <div class="info-row"><span class="ik">处理器</span><span class="iv">骁龙 8 Gen3</span></div>
-        <div class="info-row"><span class="ik">游戏 ID</span><span class="iv">#1245620</span></div>
-        <div class="info-row"><span class="ik">内核版本</span><span class="iv">6.0.2</span></div>
-        <div class="info-row"><span class="ik">已尝试方案</span><span class="iv">方案 1 · 极致兼容</span></div>
-        <div class="info-row info-select" onclick="toggleFailType(this)" style="cursor:pointer;position:relative">
-          <span class="ik">异常类型</span>
-          <span class="iv" id="failTypeVal" style="display:flex;align-items:center;gap:6px">长时间加载 <span style="font-size:10px;opacity:.5">▼</span></span>
-          <div class="fail-dropdown" id="failDropdown">
-            <div onclick="selectFailType(event,'长时间加载')">长时间加载</div>
-            <div onclick="selectFailType(event,'闪退')">闪退</div>
-            <div onclick="selectFailType(event,'黑屏')">黑屏</div>
-            <div onclick="selectFailType(event,'花屏')">花屏</div>
-          </div>
-        </div>
-      </div>
-      <div class="report-desc">上报后官方将在 1~3 个工作日内排查该机型与游戏的适配问题。</div>
-    </div>
-    <div class="drawer-foot">
-      <button class="btn btn-primary" style="width:100%" onclick="toast('✅ 已上报成功，官方将在 1~3 个工作日内处理')">确认上报</button>
     </div>
   </div>
 
@@ -920,16 +774,47 @@ const sceneData = {
 
 function showMask(){ document.getElementById('mask').classList.add('show'); }
 function hideMask(){ document.getElementById('mask').classList.remove('show'); }
-function toggleDetectDrawer(){ document.getElementById('detectCard').classList.toggle('open'); }
+function toggleDetectDrawer(){
+  const card=document.getElementById('detectCard');
+  card.classList.toggle('open');
+  if(card.classList.contains('open')){
+    backDetectList();
+  }else{
+    document.getElementById('detectList').style.display='none';
+    ['detectPanelLoad','detectPanelCrash','detectPanelBlack','detectPanelGlitch','detectPanelReport'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  }
+}
+function openDetectPanel(type){
+  const map={load:'detectPanelLoad',crash:'detectPanelCrash',black:'detectPanelBlack',glitch:'detectPanelGlitch',report:'detectPanelReport'};
+  document.getElementById('detectList').style.display='none';
+  Object.values(map).forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById(map[type]).classList.add('show');
+}
+function backDetectList(){
+  document.getElementById('detectList').style.display='flex';
+  ['detectPanelLoad','detectPanelCrash','detectPanelBlack','detectPanelGlitch','detectPanelReport'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById('miniPlanMenu').classList.remove('open');
+}
+function toggleMiniPlanMenu(e){
+  e.stopPropagation();
+  document.getElementById('miniPlanMenu').classList.toggle('open');
+}
+function selectMiniPlan(e,name,badge,color){
+  e.stopPropagation();
+  document.getElementById('miniPlanName').textContent=name;
+  const badgeEl=document.getElementById('miniPlanBadge');
+  badgeEl.textContent=badge;
+  badgeEl.className='mini-badge '+color;
+  document.getElementById('miniPlanMenu').classList.remove('open');
+}
 function setTab(id){
-  ['t1','t2','t3','t4','t5'].forEach(t=>document.getElementById(t).classList.remove('active'));
+  ['t1','t3','t5'].forEach(t=>document.getElementById(t).classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
 function goLoading(){
   setTab('t1');
-  closeAllSheets(); hideMask(); closeDrawer();
-  document.getElementById('settingsOverlay').classList.remove('show');
+  hideMask();
   document.getElementById('gameView').classList.remove('show');
   document.getElementById('loadingWrap').style.display='flex';
   document.getElementById('restartWrap').classList.remove('show');
@@ -937,8 +822,7 @@ function goLoading(){
 
 function goGameView(){
   setTab('t5');
-  closeAllSheets(); hideMask(); closeDrawer();
-  document.getElementById('settingsOverlay').classList.remove('show');
+  hideMask();
   document.getElementById('loadingWrap').style.display='none';
   document.getElementById('restartWrap').classList.remove('show');
   document.getElementById('ingamePanel').classList.remove('show');
@@ -953,87 +837,30 @@ function selectIngameFailType(e,val){
   document.getElementById('ingameFailDropdown').classList.remove('open');
 }
 
-function goReport(){
-  setTab('t4');
-  closeAllSheets(); hideMask(); closeDrawer();
-  document.getElementById('loadingWrap').style.display='none';
-  document.getElementById('restartWrap').classList.remove('show');
-  document.getElementById('settingsOverlay').classList.add('show');
-}
-function closeDrawer(){
-  document.getElementById('reportDrawer').classList.remove('show');
-}
-
-function goDiagnose(){
-  setTab('t2');
-  closeAllSubs();
-  document.getElementById('restartWrap').classList.remove('show');
-  document.getElementById('loadingWrap').style.display='flex';
-  showMask();
-  setTimeout(()=>document.getElementById('diagSheet').classList.add('show'),20);
-}
-
-function selectPlan(el){
-  document.querySelectorAll('.plan').forEach(p=>p.classList.remove('selected'));
-  el.classList.add('selected');
-  const map={'1':'方案 1 · 极致兼容','2':'方案 2 · 官方推荐','3':'方案 3 · 玩家分享'};
-  const n=el.dataset.plan;
-  document.querySelector('.sheet-foot .btn-primary').textContent='应用方案 '+n+' · 切换并重启';
-  document.getElementById('appliedPlan').textContent=map[n];
-}
-
-function goRestart(){
+function goRestart(label){
   setTab('t3');
-  closeAllSheets(); hideMask();
+  hideMask();
   document.getElementById('loadingWrap').style.display='none';
+  document.getElementById('gameView').classList.remove('show');
   const spin=document.getElementById('restartSpin');
   const ring=document.getElementById('successRing');
   const title=document.getElementById('restartTitle');
   const step=document.getElementById('restartStep');
   spin.style.display='block'; ring.style.display='none';
-  step.style.display='flex'; step.style.visibility='visible'; title.style.display='block';
-  title.textContent='正在应用新配置并重启…';
-  step.textContent='⏳ 正在写入兼容层参数…';
+  step.style.display='none'; title.style.display='block';
+  let appliedLabel=label || '极致兼容方案';
+  if(!appliedLabel.includes('修复') && !appliedLabel.endsWith('方案')) appliedLabel+='方案';
+  document.getElementById('appliedPlan').textContent=appliedLabel;
+  title.textContent='正在应用配置修改';
   document.getElementById('restartWrap').classList.add('show');
-  setTimeout(()=>step.textContent='🔄 正在重新启动游戏…',1200);
   setTimeout(()=>{
     spin.style.display='none'; ring.style.display='flex';
     title.style.display='block';
-    title.textContent='已成功应用配置方案';
+    title.textContent='配置修改已成功，重启游戏中...';
     step.style.visibility='hidden';
   },2600);
 }
 
-function openScene(name){
-  document.getElementById('sceneTitle').textContent=name+' · 排查指引';
-  const box=document.getElementById('sceneParams'); box.innerHTML='';
-  sceneData[name].forEach(p=>{
-    box.innerHTML+=`<div class="param-item"><div class="param-num">${p.n}</div>
-      <div class="param-text"><div class="pn">${p.pn}</div>
-      <div class="pv">${p.pv}</div><div class="pd">${p.pd}</div></div></div>`;
-  });
-  openSub('sceneSheet');
-}
-
-function openSub(id){ document.getElementById(id).classList.add('show'); }
-function closeSub(id){ document.getElementById(id).classList.remove('show'); }
-function closeAllSubs(){ ['sceneSheet','smartTip','sceneTip','configPage'].forEach(id=>document.getElementById(id).classList.remove('show')); }
-function closeAllSheets(){ document.getElementById('diagSheet').classList.remove('show'); closeAllSubs(); }
-function closeAll(){
-  hideMask(); closeAllSheets();
-  if(document.getElementById('t2').classList.contains('active')) goLoading();
-}
-
-function toggleFailType(el){
-  document.getElementById('failDropdown').classList.toggle('open');
-}
-function selectFailType(e,val){
-  e.stopPropagation();
-  document.getElementById('failTypeVal').innerHTML=val+' <span style="font-size:10px;opacity:.5">▼</span>';
-  document.getElementById('failDropdown').classList.remove('open');
-}
-
-function reportSubmit(){ toast('✅ 已上报：Redmi K70 Pro · 游戏ID #1245620，官方将排查并下发适配方案'); }
 function toast(msg){
   const t=document.getElementById('toast'); t.innerHTML=msg; t.classList.add('show');
   clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600);
