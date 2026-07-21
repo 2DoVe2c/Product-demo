@@ -35,16 +35,18 @@ jobs:
           root = Path(".")
           demos = []
 
-          def git_time(path):
+          def upload_time(path):
               try:
                   result = subprocess.check_output(
-                      ["git", "log", "-1", "--format=%ct", "--", str(path)],
+                      ["git", "log", "--follow", "--diff-filter=A", "--format=%ct", "--", str(path)],
                       text=True
-                  ).strip()
+                  ).strip().splitlines()
+
                   if result:
-                      return datetime.fromtimestamp(int(result))
+                      return datetime.fromtimestamp(int(result[-1]))
               except Exception:
                   pass
+
               return datetime.fromtimestamp(path.stat().st_mtime)
 
           for p in root.rglob("*.html"):
@@ -53,16 +55,20 @@ jobs:
               if p.name.lower() == "index.html":
                   continue
 
-              updated_at = git_time(p)
+              created_at = upload_time(p)
+
               demos.append({
                   "path": p,
                   "title": p.stem,
-                  "month_key": updated_at.strftime("%Y-%m"),
-                  "month_label": f"{updated_at.year} 年 {updated_at.month} 月",
-                  "date_label": updated_at.strftime("%Y-%m-%d"),
+                  "month_key": created_at.strftime("%Y-%m"),
+                  "month_label": f"{created_at.year} 年 {created_at.month} 月",
+                  "date_label": created_at.strftime("%Y-%m-%d"),
               })
 
-          demos.sort(key=lambda x: (x["month_key"], x["date_label"], x["title"]), reverse=True)
+          demos.sort(
+              key=lambda x: (x["month_key"], x["date_label"], x["title"]),
+              reverse=True
+          )
 
           groups = defaultdict(list)
           for demo in demos:
@@ -75,23 +81,26 @@ jobs:
           for index, month_key in enumerate(month_keys):
               month_demos = groups[month_key]
               month_label = month_demos[0]["month_label"]
-              is_open = " open" if index == 0 else ""
+
+              # 只有最新月份默认展开，其他月份默认折叠
+              open_attr = " open" if index == 0 else ""
 
               items = []
               for demo in month_demos:
                   href = quote(str(demo["path"]).replace("\\", "/"))
                   title = html.escape(demo["title"])
+                  title_attr = html.escape(demo["title"].lower(), quote=True)
                   date_label = html.escape(demo["date_label"])
 
                   items.append(f"""
-                    <li class="demo-item" data-title="{title.lower()}">
+                    <li class="demo-item" data-title="{title_attr}">
                       <a href="./{href}" target="_blank" rel="noopener">{title}</a>
                       <span>{date_label}</span>
                     </li>
                   """)
 
               sections.append(f"""
-                <details class="month-group"{is_open}>
+                <details class="month-group"{open_attr}>
                   <summary>
                     <span>{html.escape(month_label)}</span>
                     <em>{len(month_demos)} 个 demo</em>
@@ -178,6 +187,7 @@ jobs:
                 padding: 16px 18px;
                 cursor: pointer;
                 font-weight: 700;
+                user-select: none;
               }}
 
               summary em {{
@@ -246,7 +256,7 @@ jobs:
             <main>
               <header>
                 <h1>Product Demo 预览目录</h1>
-                <p class="meta">共 {len(demos)} 个 demo，按月份自动归档。</p>
+                <p class="meta">共 {len(demos)} 个 demo，按上传月份自动归档。</p>
               </header>
 
               <div class="toolbar">
@@ -277,8 +287,13 @@ jobs:
                   }});
 
                   group.hidden = visibleCount === 0;
+
                   if (keyword && visibleCount > 0) {{
                     group.open = true;
+                  }}
+
+                  if (!keyword) {{
+                    group.open = group === groups[0];
                   }}
                 }});
               }});
