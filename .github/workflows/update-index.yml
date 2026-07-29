@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "**.html"
-      - ".github/workflows/update-index.yml"
   workflow_dispatch:
 
 permissions:
@@ -18,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -49,16 +46,20 @@ jobs:
 
               return datetime.fromtimestamp(path.stat().st_mtime)
 
-          for p in root.rglob("*.html"):
+          for p in root.rglob("*"):
+              if not p.is_file():
+                  continue
               if ".git" in p.parts or ".github" in p.parts:
                   continue
               if p.name.lower() == "index.html":
+                  continue
+              if p.suffix.lower() not in [".html", ".htm"]:
                   continue
 
               created_at = upload_time(p)
 
               demos.append({
-                  "path": p,
+                  "path": str(p).replace("\\", "/"),
                   "title": p.stem,
                   "month_key": created_at.strftime("%Y-%m"),
                   "month_label": f"{created_at.year} 年 {created_at.month} 月",
@@ -75,19 +76,16 @@ jobs:
               groups[demo["month_key"]].append(demo)
 
           month_keys = sorted(groups.keys(), reverse=True)
-
           sections = []
 
           for index, month_key in enumerate(month_keys):
               month_demos = groups[month_key]
               month_label = month_demos[0]["month_label"]
-
-              # 只有最新月份默认展开，其他月份默认折叠
               open_attr = " open" if index == 0 else ""
 
               items = []
               for demo in month_demos:
-                  href = quote(str(demo["path"]).replace("\\", "/"))
+                  href = quote(demo["path"])
                   title = html.escape(demo["title"])
                   title_attr = html.escape(demo["title"].lower(), quote=True)
                   date_label = html.escape(demo["date_label"])
@@ -118,42 +116,28 @@ jobs:
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>Product Demo 预览目录</title>
             <style>
-              * {{
-                box-sizing: border-box;
-              }}
-
+              * {{ box-sizing: border-box; }}
               body {{
                 margin: 0;
                 font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
                 color: #172033;
                 background: #f6f7fb;
               }}
-
               main {{
                 width: min(960px, calc(100% - 32px));
                 margin: 40px auto;
               }}
-
-              header {{
-                margin-bottom: 24px;
-              }}
-
               h1 {{
                 margin: 0 0 8px;
                 font-size: 28px;
                 line-height: 1.25;
               }}
-
               .meta {{
                 margin: 0;
                 color: #667085;
                 font-size: 14px;
               }}
-
-              .toolbar {{
-                margin: 24px 0;
-              }}
-
+              .toolbar {{ margin: 24px 0; }}
               #search {{
                 width: 100%;
                 height: 44px;
@@ -165,12 +149,10 @@ jobs:
                 font-size: 15px;
                 outline: none;
               }}
-
               #search:focus {{
                 border-color: #2f6fed;
                 box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.14);
               }}
-
               .month-group {{
                 margin: 14px 0;
                 border: 1px solid #e4e7ec;
@@ -178,7 +160,6 @@ jobs:
                 background: #fff;
                 overflow: hidden;
               }}
-
               summary {{
                 display: flex;
                 align-items: center;
@@ -189,20 +170,17 @@ jobs:
                 font-weight: 700;
                 user-select: none;
               }}
-
               summary em {{
                 color: #667085;
                 font-size: 13px;
                 font-style: normal;
                 font-weight: 500;
               }}
-
               ul {{
                 list-style: none;
                 margin: 0;
                 padding: 0 18px 12px;
               }}
-
               .demo-item {{
                 display: flex;
                 align-items: center;
@@ -211,7 +189,6 @@ jobs:
                 padding: 12px 0;
                 border-top: 1px solid #eef0f4;
               }}
-
               .demo-item a {{
                 min-width: 0;
                 color: #175cd3;
@@ -219,36 +196,18 @@ jobs:
                 text-decoration: none;
                 overflow-wrap: anywhere;
               }}
-
-              .demo-item a:hover {{
-                text-decoration: underline;
-              }}
-
+              .demo-item a:hover {{ text-decoration: underline; }}
               .demo-item span {{
                 flex: 0 0 auto;
                 color: #667085;
                 font-size: 13px;
               }}
-
               .empty {{
                 padding: 24px;
                 border: 1px solid #e4e7ec;
                 border-radius: 8px;
                 background: #fff;
                 color: #667085;
-              }}
-
-              @media (max-width: 640px) {{
-                main {{
-                  width: min(100% - 24px, 960px);
-                  margin: 24px auto;
-                }}
-
-                .demo-item {{
-                  align-items: flex-start;
-                  flex-direction: column;
-                  gap: 4px;
-                }}
               }}
             </style>
           </head>
@@ -288,13 +247,8 @@ jobs:
 
                   group.hidden = visibleCount === 0;
 
-                  if (keyword && visibleCount > 0) {{
-                    group.open = true;
-                  }}
-
-                  if (!keyword) {{
-                    group.open = group === groups[0];
-                  }}
+                  if (keyword && visibleCount > 0) group.open = true;
+                  if (!keyword) group.open = group === groups[0];
                 }});
               }});
             </script>
