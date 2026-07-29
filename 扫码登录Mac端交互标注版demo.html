@@ -537,6 +537,68 @@
       line-height: 20px;
       text-align: center;
     }
+    .permission-guide {
+      position: absolute;
+      inset: 0;
+      z-index: 70;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      background: rgba(0,0,0,.68);
+      backdrop-filter: blur(2px);
+    }
+    .phone.permission-denied-state .permission-guide { display: flex; }
+    .permission-dialog {
+      width: 100%;
+      padding: 26px 20px 20px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 20px;
+      background: #282a31;
+      box-shadow: 0 24px 64px rgba(0,0,0,.58);
+      text-align: center;
+    }
+    .permission-dialog h2 {
+      color: #fff;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 520;
+    }
+    .permission-dialog p {
+      margin-top: 16px;
+      color: rgba(230,230,230,.72);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 380;
+      text-align: left;
+    }
+    .permission-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .permission-actions button {
+      height: 44px;
+      border-radius: 10px;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 520;
+      cursor: pointer;
+    }
+    .permission-cancel {
+      border: 1px solid rgba(255,255,255,.16);
+      color: rgba(255,255,255,.78);
+      background: rgba(255,255,255,.04);
+    }
+    .permission-settings {
+      border: 1px solid #338feb;
+      color: #fff;
+      background: #338feb;
+      box-shadow: 0 8px 18px rgba(51,143,235,.22);
+    }
+    .permission-actions button:hover { filter: brightness(1.07); }
+    .permission-actions button:active { transform: translateY(1px); }
     .confirm-page {
       padding: 62px 20px 28px;
       background:
@@ -656,7 +718,6 @@
     .method-tab.active::after { background: var(--brand-blue); }
     .login-surface.account-state .login-methods { display: none; }
     .login-surface.account-state { min-height: 500px; }
-    .login-surface.unbound-state { min-height: 420px; }
     .panel-header { margin-top: 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
     .panel-header h3 { color: #f4f5f7; font-size: 20px; line-height: 28px; font-weight: 520; }
     .panel-header p { margin-top: 4px; color: rgba(230,230,230,.42); font-size: 13px; line-height: 18px; }
@@ -692,31 +753,49 @@
     .qr-confirm-overlay {
       position: absolute;
       inset: 0;
-      z-index: 2;
+      z-index: 3;
+      isolation: isolate;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 0;
       border-radius: inherit;
       color: #fff;
-      background: rgba(3,5,8,.78);
+      background: transparent;
+      overflow: hidden;
       opacity: 0;
       visibility: hidden;
       transition: opacity .16s ease;
     }
     .qr-shell.confirmed .qr-confirm-overlay { opacity: 1; visibility: visible; }
+    .qr-confirm-overlay::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: rgba(0,0,0,.72);
+      pointer-events: none;
+    }
     .qr-confirm-check {
-      width: 34px;
-      height: 34px;
-      margin-bottom: 3px;
+      position: relative;
+      z-index: 2;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      margin: 0 0 12px;
       display: block;
       object-fit: contain;
       border-radius: 50%;
       filter: brightness(4);
     }
+    .qr-confirm-overlay strong,
+    .qr-confirm-overlay small { position: relative; z-index: 2; display: block; }
     .qr-confirm-overlay strong { font-size: 14px; line-height: 20px; font-weight: 600; }
-    .qr-confirm-overlay small { color: rgba(255,255,255,.82); font-size: 11px; line-height: 16px; }
+    .qr-confirm-overlay small { margin-top: 2px; color: rgba(255,255,255,.82); font-size: 11px; line-height: 16px; }
     .qr-shell.invalid { cursor: pointer; }
     .qr-shell.invalid:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: 4px; }
     .login-surface.confirm-state .qr-info { display: none; }
@@ -725,6 +804,20 @@
     .state-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-gold); box-shadow: 0 0 0 4px rgba(255,204,67,.10); }
     .state-dot.live { background: var(--brand-green); box-shadow: 0 0 0 4px rgba(51,216,164,.10); }
     .state-dot.fail { background: var(--danger); box-shadow: 0 0 0 4px rgba(255,86,120,.10); }
+    .app-download-link {
+      width: max-content;
+      margin: 6px auto 0;
+      display: block;
+      color: #38a9ef;
+      font-size: 12px;
+      line-height: 18px;
+      text-decoration: none;
+      transition: color .16s ease;
+    }
+    .app-download-link:hover { color: #73c8f5; text-decoration: underline; }
+    .app-download-link:focus-visible { outline: 2px solid rgba(56,169,239,.72); outline-offset: 3px; border-radius: 2px; }
+    .login-surface.expired-state .app-download-link,
+    .login-surface.cancelled-state .app-download-link { display: none; }
     .state-desc { margin-top: 6px; color: rgba(230,230,230,.42); font-size: 12px; line-height: 18px; }
     .state-desc:empty { display: none; }
     .panel-actions { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
@@ -1526,6 +1619,235 @@
     .detail-tag.warn { color: #f5b74f; background: rgba(245,183,79,.1); }
     .detail-tag.green { color: #51d9a4; background: rgba(51,216,164,.1); }
 
+    /* 扫码与账号密码登录同页 */
+    .login-surface {
+      width: min(780px, 96%);
+      min-height: 0;
+      padding: 30px 32px 28px;
+    }
+    .login-methods { display: none; }
+    .login-dual {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: minmax(230px, .82fr) 1px minmax(310px, 1.18fr);
+      gap: 30px;
+      align-items: start;
+    }
+    .login-divider {
+      width: 1px;
+      height: auto;
+      min-height: 408px;
+      align-self: stretch;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,.12) 12%, rgba(255,255,255,.12) 88%, transparent);
+    }
+    .login-dual .qr-shell {
+      width: 214px;
+      height: 214px;
+      padding: 11px;
+    }
+    .login-dual #qrCanvas {
+      width: 192px;
+      height: 192px;
+    }
+    .qr-view,
+    .phone-login-view {
+      min-width: 0;
+    }
+    .phone-login-view {
+      display: block;
+      margin-top: 0;
+    }
+    .qr-view.hidden,
+    .phone-login-view:not(.show) {
+      display: block;
+    }
+    .login-surface.account-state {
+      width: min(400px, 94%);
+      min-height: 0;
+      padding: 28px;
+    }
+    .login-surface.account-state .login-dual { display: none; }
+    .panel-header,
+    .phone-login-view h3 {
+      margin-top: 0;
+    }
+    .panel-header p:empty { display: none; }
+    .phone-form {
+      margin-top: 20px;
+      gap: 12px;
+    }
+    .forgot-password {
+      margin-top: -2px;
+      justify-self: end;
+      color: rgba(77,184,232,.86);
+      background: transparent;
+      font-size: 11px;
+      line-height: 16px;
+    }
+    .third-party-title { margin-top: 16px; }
+    .guest-login { margin-top: 14px; }
+    .qr-refresh-button {
+      display: none;
+      min-width: 112px;
+      height: 36px;
+      margin-top: 14px;
+      padding: 0 18px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(18,150,219,.54);
+      border-radius: 10px;
+      color: #55bdf0;
+      background: rgba(18,150,219,.13);
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+    .qr-refresh-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(77,184,232,.84);
+      background: rgba(18,150,219,.20);
+    }
+    .login-surface.expired-state .qr-refresh-button { display: inline-flex; }
+    .login-surface.confirm-state .qr-info { display: none; }
+
+    /* 移动端设备授权确认 */
+    .confirm-page {
+      padding: 62px 18px 24px;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(28,76,118,.18), transparent 38%),
+        #050505;
+    }
+    .confirm-dialog {
+      width: 100%;
+      padding: 24px 18px 18px;
+      border-color: rgba(255,255,255,.15);
+      border-radius: 18px;
+      background: rgba(26,28,34,.98);
+      text-align: left;
+    }
+    .confirm-heading { text-align: center; }
+    .confirm-heading > span {
+      color: #55bdf0;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+    .confirm-dialog .confirm-heading h2 {
+      margin-top: 6px;
+      color: #f2f3f6;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+    }
+    .confirm-dialog .confirm-heading p {
+      margin-top: 5px;
+      color: rgba(230,230,230,.42);
+      font-size: 12px;
+      line-height: 18px;
+    }
+    .confirm-device-info {
+      margin-top: 20px;
+      padding: 2px 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      background: rgba(255,255,255,.035);
+    }
+    .confirm-info-row {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid rgba(255,255,255,.065);
+    }
+    .confirm-info-row:last-child { border-bottom: 0; }
+    .confirm-info-row span {
+      color: rgba(230,230,230,.42);
+      font-size: 12px;
+      line-height: 18px;
+    }
+    .confirm-info-row strong {
+      color: rgba(242,242,242,.88);
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 520;
+      text-align: right;
+    }
+    .confirm-platform-block { margin-top: 18px; }
+    .confirm-section-title {
+      color: rgba(230,230,230,.42);
+      font-size: 11px;
+      line-height: 16px;
+    }
+    .confirm-platform-list {
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .confirm-platform-list .platform-card {
+      min-height: 58px;
+      padding: 8px 10px;
+      grid-template-columns: 38px 1fr auto;
+      gap: 10px;
+      border-radius: 10px;
+    }
+    .confirm-platform-list .platform-card .platform-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+    .confirm-platform-list .platform-card strong {
+      font-size: 13px;
+      line-height: 18px;
+    }
+    .confirm-platform-list .platform-card small {
+      margin-top: 2px;
+      font-size: 11px;
+      line-height: 15px;
+    }
+    .confirm-dialog .confirm-warning {
+      margin-top: 16px;
+      color: rgba(230,230,230,.48);
+      font-size: 11px;
+      line-height: 16px;
+      text-align: center;
+    }
+    .confirm-actions {
+      margin-top: 16px;
+      gap: 9px;
+    }
+    .confirm-primary,
+    .confirm-secondary {
+      height: 44px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .confirm-primary {
+      background: #0073e6;
+      box-shadow: 0 8px 22px rgba(0,115,230,.20);
+    }
+    @media (max-width: 1460px) {
+      .login-surface:not(.account-state) {
+        width: min(740px, 96%);
+        min-height: 0;
+        padding: 26px 28px 24px;
+      }
+      .login-dual {
+        grid-template-columns: minmax(220px, .8fr) 1px minmax(300px, 1.2fr);
+        gap: 24px;
+      }
+      .login-divider { min-height: 400px; }
+    }
+    @media (max-width: 760px) {
+      .login-surface:not(.account-state) {
+        width: 730px;
+        max-width: none;
+        transform: scale(.5);
+        transform-origin: center;
+      }
+    }
+
     .platform-list:empty, .result-platforms:empty { display: none; }
 </style>
 </head>
@@ -1544,17 +1866,20 @@
         <button class="state-nav scenario" data-scenario="scanning">
           <span class="state-index">2</span><span class="state-copy"><strong>摄像头扫码</strong><small>移动端识别二维码</small></span><span class="state-arrow">›</span>
         </button>
+        <button class="state-nav scenario" data-scenario="permissionDenied">
+          <span class="state-index">3</span><span class="state-copy"><strong>授权被拒绝</strong><small>引导开启摄像头权限</small></span><span class="state-arrow">›</span>
+        </button>
         <button class="state-nav scenario" data-scenario="confirm">
-          <span class="state-index">3</span><span class="state-copy"><strong>扫码确认</strong><small>移动端确认登录</small></span><span class="state-arrow">›</span>
+          <span class="state-index">4</span><span class="state-copy"><strong>扫码确认</strong><small>移动端确认登录</small></span><span class="state-arrow">›</span>
         </button>
         <button class="state-nav scenario" data-scenario="success">
-          <span class="state-index">4</span><span class="state-copy"><strong>登录成功</strong><small>继承 Steam / Epic</small></span><span class="state-arrow">›</span>
+          <span class="state-index">5</span><span class="state-copy"><strong>登录成功</strong><small>盖世账号登录完成</small></span><span class="state-arrow">›</span>
         </button>
         <button class="state-nav scenario" data-scenario="expired">
-          <span class="state-index">5</span><span class="state-copy"><strong>二维码过期</strong><small>点击二维码刷新</small></span><span class="state-arrow">›</span>
+          <span class="state-index">6</span><span class="state-copy"><strong>二维码过期</strong><small>点击二维码刷新</small></span><span class="state-arrow">›</span>
         </button>
-        <button class="state-nav scenario" data-scenario="unbound">
-          <span class="state-index">6</span><span class="state-copy"><strong>仅盖世账号登录</strong><small>无绑定 Steam/Epic 关系</small></span><span class="state-arrow">›</span>
+        <button class="state-nav scenario" data-scenario="cancelled">
+          <span class="state-index">7</span><span class="state-copy"><strong>登录已取消</strong><small>当前二维码立即失效</small></span><span class="state-arrow">›</span>
         </button>
       </div>
       <div class="state-sidebar-note"><strong>操作提示</strong><br>点击状态可切换预览；在“等待扫码”状态点击手机右上角扫一扫，可演示扫码并进入“扫码确认”。</div>
@@ -1566,17 +1891,18 @@
       <div class="app-mark" aria-hidden="true">G</div>
       <div class="head-main">
         <div class="title-line">
-          <h1 id="demoTitle">Mac 端扫码登录与 Steam/Epic 关系继承</h1>
+          <h1 id="demoTitle">Mac 端扫码登录与 Steam/Epic 服务端绑定关系</h1>
           <div class="scenario-tabs" aria-label="页面状态">
             <button class="scenario active" data-scenario="wait">等待扫码</button>
             <button class="scenario" data-scenario="scanning">摄像头扫码</button>
+            <button class="scenario" data-scenario="permissionDenied">授权被拒绝</button>
             <button class="scenario" data-scenario="confirm">扫码确认</button>
             <button class="scenario" data-scenario="success">登录成功</button>
             <button class="scenario" data-scenario="expired">二维码过期</button>
-            <button class="scenario" data-scenario="unbound">仅盖世账号登录</button>
+            <button class="scenario" data-scenario="cancelled">登录已取消</button>
           </div>
         </div>
-        <p id="demoSubtitle">移动端“我的”页点击扫一扫，识别并确认后 Mac 登录盖世账号并继承已有平台绑定关系</p>
+        <p id="demoSubtitle">移动端“我的”页点击扫一扫，识别并确认后 Mac 登录盖世账号并读取服务端平台绑定关系</p>
       </div>
     </header>
 
@@ -1679,11 +2005,23 @@
 
           <section class="phone-page confirm-page" id="confirmPage">
             <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-              <h2 id="confirmTitle">确认登录 Mac 端</h2>
-              <p>是否使用当前盖世账号登录这台 Mac？</p>
+              <div class="confirm-heading">
+                <span>安全登录确认</span>
+                <h2 id="confirmTitle">登录至MacOS设备</h2>
+                <p>请确认本次登录设备及账号信息</p>
+              </div>
+              <div class="confirm-device-info">
+                <div class="confirm-info-row"><span>设备名称</span><strong>MacBook Air</strong></div>
+                <div class="confirm-info-row"><span>登录位置</span><strong>广东省广州市</strong></div>
+              </div>
+              <div class="confirm-platform-block">
+                <div class="confirm-section-title">已绑定账号</div>
+                <div class="platform-list confirm-platform-list" id="mobilePlatforms"></div>
+              </div>
+              <p class="confirm-warning">若非本人操作，请点击取消授权</p>
               <div class="confirm-actions">
                 <button class="confirm-primary" id="confirmLoginBtn">确认登录</button>
-                <button class="confirm-secondary" id="cancelLoginBtn">取消</button>
+                <button class="confirm-secondary" id="cancelLoginBtn">取消授权</button>
               </div>
             </div>
           </section>
@@ -1693,9 +2031,18 @@
               <img class="result-mark" id="mobileResultMark" src="data:image/png;base64,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" alt="登录成功">
               <h2 id="mobileResultTitle">Mac 端登录成功</h2>
               <p id="mobileResultDesc">已完成本次扫码登录</p>
-              <div class="result-platforms" id="mobilePlatforms"></div>
             </div>
           </section>
+          <div class="permission-guide" id="permissionGuide" role="dialog" aria-modal="true" aria-labelledby="permissionTitle">
+            <div class="permission-dialog">
+              <h2 id="permissionTitle">提示</h2>
+              <p>您已拒绝授权,将无法使用当前功能,如果需要恢复使用,请手动允许【盖世游戏】使用【摄像头】权限。</p>
+              <div class="permission-actions">
+                <button class="permission-cancel" id="permissionCancelBtn" type="button">取消</button>
+                <button class="permission-settings" id="permissionSettingsBtn" type="button">去设置</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1714,41 +2061,38 @@
                 <span>盖世游戏</span>
               </div>
 
-              <div class="login-methods" role="tablist" aria-label="登录方式">
-                <button class="method-tab" id="phoneMethodBtn" role="tab" aria-selected="false">手机号登录 / 注册</button>
-                <button class="method-tab active" id="qrMethodBtn" role="tab" aria-selected="true">扫码登录</button>
-              </div>
-
-              <div class="qr-view" id="qrView">
+              <div class="login-dual" id="loginDual">
+                <div class="qr-view" id="qrView">
                 <div class="panel-header">
-                  <div><h3 id="macTitle">扫码登录</h3><p id="macSubtitle">使用盖世游戏 App 扫一扫</p></div>
+                  <div><h3 id="macTitle">扫码登录</h3><p id="macSubtitle"></p></div>
                 </div>
                 <div class="qr-layout">
                   <div class="qr-shell" id="qrShell" role="button" tabindex="-1" aria-label="登录二维码">
                     <canvas id="qrCanvas" width="224" height="224" aria-label="登录二维码"></canvas>
                     <div class="qr-overlay" id="qrOverlay"><strong>点击刷新</strong></div>
-                    <div class="qr-confirm-overlay" aria-live="polite"><img class="qr-confirm-check" src="data:image/png;base64,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" alt=""><strong>二维码已识别</strong><small>请在盖世游戏 App 确认</small></div>
+                    <div class="qr-confirm-overlay" aria-live="polite"><img class="qr-confirm-check" src="data:image/png;base64,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" alt=""><strong>二维码已识别</strong><small>请尽快在手机上确认</small></div>
                   </div>
+                  <button class="qr-refresh-button" id="refreshQrBtn" type="button">刷新二维码</button>
                   <div class="qr-info">
                     <div class="state-row"><i class="state-dot" id="stateDot"></i><span id="stateTitle">等待手机扫一扫</span></div>
+                    <a class="app-download-link" href="https://hub.xiaoji.com/" target="_blank" rel="noopener noreferrer">下载盖世游戏APP</a>
                     <p class="state-desc" id="stateDesc"></p>
                   </div>
                 </div>
                 <p class="security-line">二维码仅用于本次登录，使用后立即失效</p>
               </div>
 
-              <div class="phone-login-view" id="phoneLoginView">
-                <h3>手机号登录 / 注册</h3>
-                <p>未注册账号的手机号将在验证后自动注册盖世账号并登录</p>
+                <div class="login-divider" aria-hidden="true"></div>
+
+                <div class="phone-login-view" id="phoneLoginView">
+                <h3>账号密码登录</h3>
+                <p>使用盖世账号或绑定手机号登录</p>
                 <form class="phone-form" id="phoneForm">
                   <label class="field-shell">
-                    <span class="field-prefix">+86</span>
-                    <input type="tel" inputmode="numeric" placeholder="输入手机号码" aria-label="手机号码">
+                    <input type="text" autocomplete="username" placeholder="请输入手机号 / 盖世账号" aria-label="手机号或盖世账号">
                   </label>
-                  <div class="code-row">
-                    <label class="field-shell"><input type="text" inputmode="numeric" placeholder="输入短信中的验证码" aria-label="短信验证码"></label>
-                    <button type="button" class="code-button" id="codeBtn">获取验证码</button>
-                  </div>
+                  <label class="field-shell"><input type="password" autocomplete="current-password" placeholder="请输入密码" aria-label="密码"></label>
+                  <button type="button" class="forgot-password">忘记密码</button>
                   <button type="submit" class="login-submit">登录</button>
                   <label class="agreement">
                     <input type="checkbox">
@@ -1763,6 +2107,7 @@
                 </div>
                 <button class="guest-login"><span class="guest-icon"></span><span>游客模式，先体验一下</span></button>
               </div>
+              </div>
 
               <div class="account-view" id="accountView">
                 <button class="success-close" id="successCloseBtn" type="button" aria-label="关闭登录成功弹窗" title="关闭">&times;</button>
@@ -1772,9 +2117,8 @@
                 </div>
                 <div class="account-profile">
                   <div class="profile-avatar">盖</div>
-                  <div><h4>盖世玩家 11837</h4></div>
+                  <div><h4 id="accountNickname">盖世玩家 11837</h4></div>
                 </div>
-                <div class="platform-list" id="macPlatforms"></div>
               </div>
             </div>
           </div>
@@ -1820,111 +2164,138 @@
     const stateLabels = {
       wait: ["等待手机扫一扫", "我的页扫一扫"],
       scanning: ["等待手机扫一扫", "摄像头扫码"],
+      permissionDenied: ["等待手机扫一扫", "授权被拒绝"],
       confirm: ["等待手机确认", "扫码确认"],
       success: ["登录成功", "登录结果"],
       expired: ["二维码已过期", "二维码过期"],
-      unbound: ["仅盖世账号登录", "登录结果"]
+      cancelled: ["登录已取消", "我的页"]
     };
 
     const detailContent = {
       wait: {
         title: "等待扫码",
-        summary: "Mac 端展示一次性二维码；移动端登录用户可从“我的”页右上角进入扫一扫。",
+        summary: "Mac 登录页同屏提供扫码登录与账号密码登录；移动端登录用户可从“我的”页右上角进入扫一扫。",
         interaction: [
-          ["Mac 端页面", "登录页提供“手机号登录 / 注册”和“扫码登录”两种方式；扫码登录页由一次性二维码、等待状态和安全说明组成。", "页面呈现"],
+          ["Mac 端页面", "登录卡片左侧展示扫码登录，右侧展示账号密码登录，两种登录方式在同一页面并列呈现。", "页面呈现"],
+          ["App 下载入口", "“等待手机扫一扫”下方展示蓝色文字链接“下载盖世游戏APP”，点击后在新窗口打开盖世游戏官方下载页。", "页面呈现"],
           ["扫一扫入口", "移动端“我的”页右上角依次展示<strong>扫一扫、下载、设置</strong>，扫一扫位于下载按钮左侧。", "页面呈现"],
-          ["点击扫一扫", "相机权限已授权时直接进入摄像头扫码页；待授权时由系统界面承载权限申请。", "操作结果"],
-          ["二维码有效态", "Mac 端展示“等待手机扫一扫”，二维码保持可扫描状态，安全说明位于二维码状态下方。", "状态呈现"]
+          ["点击扫一扫", "相机权限已授权时直接进入摄像头扫码页；首次未授权时触发系统相机权限界面。", "操作结果"],
+          ["二维码有效态", "Mac 左侧扫码区展示“等待手机扫一扫”，二维码保持可扫描状态，安全说明位于状态信息下方。", "状态呈现"]
         ],
         boundary: [
           ["入口可见条件", "移动端未登录盖世账号时不展示扫一扫按钮；完成登录后按钮自动展示。", "前置条件"],
-          ["权限拒绝", "用户拒绝相机权限后关闭系统权限界面并返回“我的”页，Mac 端保持等待扫码状态。", "返回规则"],
-          ["二维码生命周期", "二维码自生成起有效期为 2 分钟，并与当前 Mac 设备及登录请求绑定；登录成功后立即失效，超过 2 分钟后进入过期状态。", "安全"],
-          ["凭证范围", "二维码承载盖世账号登录请求标识；Steam/Epic 密码、令牌及本地客户端会话不属于二维码数据范围。", "安全"]
+          ["首次拒绝权限", "移动端不进入扫码页，返回“我的”页并显示 Toast“摄像头权限未获取，请重新授权”。", "异常提示"],
+          ["权限不再询问", "移动端展示权限引导弹窗，主按钮为“去设置”，次按钮为“取消”；完成系统授权后再次点击扫一扫进入扫码页。", "权限边界"],
+          ["二维码生命周期", "二维码自生成起有效期为 <strong>2 分钟</strong>，并绑定 Mac 设备及当前登录请求。", "安全"],
+          ["页面生命周期", "Mac 登录页关闭、刷新、应用重启或重新进入登录页时，旧二维码及其待确认请求立即失效。", "安全"],
+          ["远程扫码", "二维码允许截屏或远程扫描；登录设备、位置及账号由移动端确认页明确呈现，并由用户主动确认。", "安全"],
+          ["凭证范围", "Steam/Epic 密码、令牌、移动端本地记录及第三方平台客户端登录态不进入二维码登录链路。", "安全"]
         ]
       },
       scanning: {
         title: "摄像头扫码",
-        summary: "移动端展示摄像头取景页；有效二维码识别完成后进入扫码确认。",
+        summary: "移动端展示摄像头取景页；首次有效二维码校验通过后进入扫码确认。",
         interaction: [
           ["扫码页呈现", "页面由摄像头取景区域、扫描框和返回入口组成。", "页面呈现"],
           ["二维码识别", "用户将 Mac 端二维码置于扫描框内，识别完成后自动提交校验。", "操作结果"],
-          ["Mac 端状态", "移动端处于摄像头扫码页时，Mac 端二维码、标题、辅助说明及“等待手机扫一扫”状态保持一致。", "状态联动"],
-          ["有效二维码", "校验通过后，移动端展示确认登录弹窗，Mac 端二维码进入等待手机确认状态。", "状态结果"]
+          ["Mac 端状态", "移动端处于摄像头扫码页时，Mac 登录页保持左侧扫码、右侧账号密码登录的同屏布局，扫码区继续显示“等待手机扫一扫”。", "状态联动"],
+          ["首次有效扫码", "校验通过后，登录请求绑定扫码时的 uid、移动端设备和登录 session，移动端进入扫码确认。", "状态结果"]
         ],
         boundary: [
           ["返回扫码入口页", "点击返回后进入“我的”页；Mac 端保持等待扫码，当前二维码在有效期内可继续使用。", "返回规则"],
           ["无效二维码", "识别非盖世登录二维码时，移动端显示 Toast“二维码无效”，并停留在扫码页。", "异常提示"],
           ["二维码已过期", "识别已过期二维码时，移动端显示 Toast“二维码已过期”，并停留在扫码页；Mac 端过期二维码区域支持点击刷新。", "异常提示"],
-          ["网络异常", "校验请求失败时，移动端显示 Toast“网络异常，请重试”，并停留在扫码页供用户重新扫描。", "容错"],
-          ["重复识别", "同一二维码的连续识别结果按首次有效请求处理，后续重复结果不重复创建待确认请求。", "幂等"]
+          ["多手机同时扫描", "同一二维码仅允许第一个有效扫码者进入确认流程；其他手机显示 Toast“二维码已被扫描”并停留扫码页。", "并发"],
+          ["扫码网络异常", "移动端显示 Toast“网络异常，请重试”并停留扫码页；Mac 端保持等待扫码，二维码在原有效期内继续有效。", "容错"],
+          ["扫码页进入后台", "扫码页退至后台时，本次登录请求按失效处理；返回前台后需要重新扫码。", "安全"],
+          ["异常扫描频率", "同一二维码限制异常扫描和校验次数；达到阈值后二维码失效，具体阈值由研发确定。", "安全"]
+        ]
+      },
+      permissionDenied: {
+        title: "授权被拒绝",
+        summary: "移动端未获得摄像头权限时返回“我的”页，并通过权限引导弹窗提供后续操作。",
+        interaction: [
+          ["移动端呈现", "“我的”页覆盖黑色半透明蒙层，页面中央展示摄像头权限引导弹窗。", "页面呈现"],
+          ["提示文案", "弹窗说明摄像头权限已被拒绝，并提示用户可手动允许【盖世游戏】使用【摄像头】权限。", "信息呈现"],
+          ["取消", "点击“取消”后关闭弹窗并停留在“我的”页。", "操作结果"],
+          ["去设置", "点击“去设置”后进入系统应用权限设置页。", "操作结果"],
+          ["Mac 端状态", "Mac 登录页保持等待手机扫一扫，当前二维码在有效期内继续可用。", "状态联动"]
+        ],
+        boundary: [
+          ["权限前置条件", "移动端未取得摄像头权限时不进入摄像头扫码页。", "权限边界"],
+          ["再次进入扫码", "用户在系统设置中开启摄像头权限后，再次点击扫一扫进入摄像头扫码页。", "恢复规则"],
+          ["取消操作", "取消权限引导不改变移动端登录态，也不影响 Mac 端当前二维码的原有效期。", "状态保持"]
         ]
       },
       confirm: {
         title: "扫码确认",
-        summary: "移动端展示确认登录弹窗；Mac 端二维码区域展示等待手机确认状态。",
+        summary: "移动端核对设备、位置及账号信息后确认授权；Mac 端二维码区域展示等待手机确认状态。",
         interaction: [
-          ["Mac 端呈现", "二维码容器覆盖完整的黑色半透明遮罩，内部展示“二维码已识别”和“请在盖世游戏 App 确认”。", "页面呈现"],
-          ["移动端弹窗", "弹窗由“确认登录 Mac 端”标题、当前账号确认说明、蓝色“确认登录”按钮和深色“取消”按钮组成。", "页面呈现"],
-          ["确认登录", "点击“确认登录”后提交当前盖世账号授权，Mac 端进入登录成功状态。", "操作结果"],
-          ["取消", "点击“取消”后移动端返回“我的”页，Mac 端进入等待扫码状态。", "操作结果"]
+          ["Mac 端呈现", "二维码容器覆盖完整的黑色半透明遮罩，内部展示“二维码已识别”和“请尽快在手机上确认”。", "页面呈现"],
+          ["移动端弹窗", "弹窗标题为“登录至MacOS设备”，展示设备名称、登录位置、“已绑定账号”分区及授权操作。", "页面呈现"],
+          ["设备与位置", "设备名称展示“MacBook Air”，登录位置按 IP 粗定位至市级；登录时间在能力支持时展示。", "信息呈现"],
+          ["已绑定账号", "当前盖世账号存在服务端平台绑定关系时，弹窗展示平台昵称、Steam/Epic 已登录状态及“可用”标签。", "账号呈现"],
+          ["安全提示", "授权操作上方展示“若非本人操作，请点击取消授权”。", "安全提示"],
+          ["确认登录", "点击“确认登录”后提交已绑定的首次扫码账号授权，Mac 端处理登录结果。", "操作结果"],
+          ["取消授权", "点击“取消授权”后移动端返回“我的”页，Mac 端展示“本次登录已取消，请刷新二维码”。", "操作结果"]
         ],
         boundary: [
-          ["登录态签发条件", "Mac 登录态在收到移动端当前账号的有效确认后生效。", "安全"],
-          ["确认账号", "确认对象固定为移动端当前登录的盖世账号，账号切换需退出确认弹窗后在移动端完成。", "账号边界"],
-          ["取消结果", "取消结束当前待确认请求，Mac 端维持原登录状态并进入等待扫码。", "返回规则"],
-          ["二维码已失效", "确认登录时二维码已过期或已使用，移动端显示 Toast“登录请求已失效，请重新扫码”。", "异常提示"],
-          ["单次确认", "同一登录请求仅接收一个有效确认结果，重复点击沿用首次处理结果。", "幂等"]
+          ["待确认有效期", "待确认阶段继续受二维码自生成起 2 分钟有效期限制，不展示倒计时数字。", "生命周期"],
+          ["确认资格", "仅首次扫码时绑定的 uid、移动端设备和登录 session 可以提交确认。", "安全"],
+          ["确认复核", "确认时重新校验移动端登录态、当前 uid、移动端设备、登录 session、二维码状态及 Mac 登录请求。", "安全"],
+          ["账号或登录态变化", "退出登录、切换账号或 session 失效时，请求失效并显示 Toast“登录状态已变化，请重新扫码”。", "异常提示"],
+          ["确认时请求失效", "确认登录时二维码已过期或已使用，移动端显示 Toast“登录请求已失效，请重新扫码”。", "异常提示"],
+          ["确认提交网络异常", "移动端显示 Toast“网络异常，请重试”并停留确认弹窗；Mac 端保持等待确认，请求在原有效期内继续有效。", "容错"],
+          ["取消结果", "取消使当前二维码和待确认请求立即失效，不能再次扫码或确认。", "返回规则"],
+          ["后台与异常退出", "确认弹窗退至后台、App 被杀或闪退时读取服务端请求状态；请求已失效时返回“我的”页并重新扫码。", "安全"]
         ]
       },
       success: {
         title: "登录成功",
-        summary: "Mac 端登录同一盖世账号，并继承该账号下已绑定的 Steam/Epic 关系。",
+        summary: "Mac 端完成盖世账号登录；成功弹窗仅展示盖世账号昵称。",
         interaction: [
           ["登录结果", "Mac 端展示盖世账号登录成功弹窗，移动端在屏幕内容区域中央展示“Mac 端登录成功”。", "状态呈现"],
           ["盖世账号信息", "Mac 弹窗展示盖世账号昵称；“已登录”标签右边缘与下方账号卡片右边缘对齐。", "页面呈现"],
-          ["平台账号卡片", "卡片第一行以白色主文案展示对应平台用户昵称，第二行以灰色说明展示“Steam 已登录”或“Epic 已登录”，右侧展示“可用”。", "页面呈现"],
-          ["弹窗尺寸", "弹窗高度根据盖世账号区和平台账号卡片数量自适应。", "页面呈现"],
+          ["弹窗尺寸", "成功弹窗按盖世账号结果信息的实际内容高度自适应。", "页面呈现"],
           ["关闭弹窗", "点击右上角关闭按钮或弹窗外空白区域后收起成功弹窗，Mac 端保持当前登录状态。", "操作结果"]
         ],
         boundary: [
-          ["关系继承范围", "平台状态来源为当前盖世账号在扫码登录时已有的服务端 Steam/Epic 绑定关系。", "账号边界"],
-          ["展示字段", "平台账号展示字段限定为平台昵称；第三方密码、Token、Steam ID 及其他敏感凭证属于保护范围。", "隐私安全"],
+          ["信息范围", "Steam/Epic 平台信息仅在移动端扫码确认弹窗中按服务端绑定关系展示；Mac 登录成功弹窗不展示平台信息。", "账号边界"],
+          ["凭证边界", "第三方密码、Token、Steam ID 及其他敏感凭证不进入扫码登录链路。", "隐私安全"],
           ["二维码核销", "二维码在登录成功后立即核销，重复扫描返回二维码失效结果。", "安全"],
+          ["Mac 结果同步异常", "Mac 端展示“同步中/重试中”，网络恢复后继续拉取结果；服务端判定请求失效时进入二维码失效刷新态。", "容错"],
           ["关闭范围", "关闭操作仅收起成功弹窗，Mac 登录态及本次扫码结果保持有效。", "交互边界"]
         ]
       },
       expired: {
         title: "二维码过期",
-        summary: "Mac 端二维码区域展示过期状态；点击该区域生成新二维码。",
+        summary: "Mac 端二维码区域展示过期状态，并在二维码下方提供刷新按钮。",
         interaction: [
           ["过期状态", "Mac 端页面标题与状态行展示“二维码已过期”，二维码遮罩中央展示单行“点击刷新”。", "页面呈现"],
           ["安全说明", "“二维码仅用于本次登录，使用后立即失效”位于二维码状态下方。", "页面呈现"],
-          ["点击刷新", "点击过期二维码区域后生成新二维码，Mac 端进入“等待手机扫一扫”状态。", "操作结果"]
+          ["刷新二维码", "点击二维码区域或二维码下方“刷新二维码”按钮后生成新二维码，Mac 端进入“等待手机扫一扫”状态。", "操作结果"]
         ],
         boundary: [
           ["移动端提示", "移动端识别已过期二维码时显示 Toast“二维码已过期”，并停留在扫码页。", "异常提示"],
+          ["确认页停留超时", "移动端确认弹窗停留超过有效期后，点击“确认登录”显示 Toast“登录请求已失效，请重新扫码”。", "异常提示"],
           ["旧二维码", "新二维码生成后，旧二维码的登录请求保持失效；旧二维码截图返回相同过期结果。", "安全"],
-          ["刷新幂等", "连续点击过期二维码区域时，仅最新生成的二维码保持有效。", "并发"],
+          ["刷新幂等", "连续触发二维码区域或刷新按钮时，仅最新生成的二维码保持有效。", "并发"],
           ["状态范围", "二维码过期仅表示当前 Mac 登录请求失效。", "概念边界"],
           ["失败记录", "服务端记录二维码标识、过期时间和失败原因，用于登录问题排查。", "埋点"]
         ]
       },
-      unbound: {
-        title: "仅盖世账号登录",
-        summary: "当前盖世账号无 Steam/Epic 绑定关系；Mac 端登录结果由盖世账号信息组成。",
+      cancelled: {
+        title: "登录已取消",
+        summary: "移动端取消确认后返回“我的”页；Mac 端提示刷新二维码。",
         interaction: [
-          ["登录结果", "Mac 端完成盖世账号登录，移动端在屏幕内容区域中央展示“Mac 端登录成功”。", "状态呈现"],
-          ["弹窗内容", "Mac 成功弹窗由盖世账号昵称和“已登录”状态组成。", "页面呈现"],
-          ["状态对齐", "“已登录”标签右边缘与盖世账号卡片右边缘对齐。", "页面呈现"],
-          ["弹窗尺寸", "成功弹窗按盖世账号区域的实际内容高度自适应。", "页面呈现"],
-          ["关闭弹窗", "点击右上角关闭按钮或弹窗外空白区域后收起成功弹窗，Mac 端保持当前登录状态。", "操作结果"]
+          ["移动端结果", "点击“取消授权”后关闭确认弹窗并返回“我的”页。", "操作结果"],
+          ["Mac 端状态", "Mac 端展示“本次登录已取消，请刷新二维码”，二维码遮罩中央展示“点击刷新”。", "状态呈现"],
+          ["重新发起", "点击二维码区域或二维码下方“刷新二维码”按钮生成新二维码。", "操作结果"]
         ],
         boundary: [
-          ["场景条件", "该状态对应当前盖世账号的服务端 Steam/Epic 绑定关系为空。", "账号边界"],
-          ["登录效力", "盖世账号登录态正常签发，Mac 端进入账号可用状态。", "登录边界"],
-          ["平台关系", "扫码登录读取当前盖世账号在登录时已有的 Steam/Epic 绑定关系。", "能力边界"],
-          ["关闭范围", "关闭操作仅收起成功弹窗，Mac 登录态及本次扫码结果保持有效。", "交互边界"]
+          ["请求结束", "取消操作使待确认请求进入 cancelled 状态，当前二维码立即失效。", "生命周期"],
+          ["禁止复用", "已取消二维码不能再次扫码或确认；移动端确认操作返回“登录请求已失效，请重新扫码”。", "安全"],
+          ["刷新结果", "新二维码生成后进入 waiting_scan，旧二维码继续保持失效。", "状态流转"]
         ]
       }
     };
@@ -1973,30 +2344,18 @@
     const qrView = document.getElementById("qrView");
     const phoneLoginView = document.getElementById("phoneLoginView");
     const accountView = document.getElementById("accountView");
+    const accountNickname = document.getElementById("accountNickname");
     const macContent = document.querySelector(".mac-content");
-    const qrMethodBtn = document.getElementById("qrMethodBtn");
-    const phoneMethodBtn = document.getElementById("phoneMethodBtn");
     const qrShell = document.getElementById("qrShell");
-    const macPlatforms = document.getElementById("macPlatforms");
     const mobilePlatforms = document.getElementById("mobilePlatforms");
+    const phone = document.querySelector(".phone");
+    const qrConfirmCheck = document.querySelector(".qr-confirm-check");
+    qrConfirmCheck.src = document.getElementById("mobileResultMark").src;
 
     function showPhonePage(name) {
       Object.values(pages).forEach(function(page) { page.classList.remove("show"); });
       pages[name].classList.add("show");
-      document.querySelector(".phone").classList.toggle("mine-active", name === "mine");
-    }
-
-    function showLoginMethod(method) {
-      const showQr = method === "qr";
-      loginSurface.classList.remove("account-state");
-      accountView.classList.remove("show");
-      qrView.classList.toggle("hidden", !showQr);
-      phoneLoginView.classList.toggle("show", !showQr);
-      qrMethodBtn.classList.toggle("active", showQr);
-      phoneMethodBtn.classList.toggle("active", !showQr);
-      qrMethodBtn.setAttribute("aria-selected", String(showQr));
-      phoneMethodBtn.setAttribute("aria-selected", String(!showQr));
-      document.getElementById("macState").textContent = showQr ? "等待手机扫一扫" : "手机号登录";
+      phone.classList.toggle("mine-active", name === "mine");
     }
 
     function toast(message) {
@@ -2063,7 +2422,6 @@
 
     function setPlatforms(type) {
       const html = type === "bound" ? boundCards : "";
-      macPlatforms.innerHTML = html;
       mobilePlatforms.innerHTML = html;
     }
 
@@ -2073,36 +2431,42 @@
       });
       document.getElementById("macState").textContent = stateLabels[type][0];
       document.getElementById("phoneState").textContent = stateLabels[type][1];
-      document.getElementById("demoTitle").textContent = type === "unbound"
-        ? "仅盖世账号登录（无绑定 Steam/Epic 关系）"
-        : "Mac 端扫码登录与 Steam/Epic 关系继承";
-      document.getElementById("demoSubtitle").textContent = type === "unbound"
-        ? "移动端扫码并确认后 Mac 登录盖世账号；当前账号无可继承的平台绑定关系"
-        : "移动端“我的”页点击扫一扫，识别并确认后 Mac 登录盖世账号并继承已有平台绑定关系";
-      loginSurface.classList.remove("account-state", "unbound-state", "confirm-state", "dismissed");
+      document.getElementById("demoTitle").textContent = "Mac 端扫码登录与 Steam/Epic 服务端绑定关系";
+      document.getElementById("demoSubtitle").textContent = "移动端“我的”页点击扫一扫，识别并确认后 Mac 登录盖世账号；平台绑定信息在移动端确认弹窗中展示";
+      loginSurface.classList.remove("account-state", "confirm-state", "expired-state", "cancelled-state", "dismissed");
       qrView.classList.remove("hidden");
       phoneLoginView.classList.remove("show");
       accountView.classList.remove("show");
-      qrMethodBtn.classList.add("active");
-      phoneMethodBtn.classList.remove("active");
-      qrMethodBtn.setAttribute("aria-selected", "true");
-      phoneMethodBtn.setAttribute("aria-selected", "false");
+      phone.classList.remove("permission-denied-state");
       qrShell.classList.remove("invalid", "confirmed");
       qrShell.setAttribute("tabindex", "-1");
       document.getElementById("stateDot").className = "state-dot";
+      accountNickname.textContent = "盖世玩家 11837";
+      document.getElementById("successTitle").textContent = "欢迎回来";
+      document.getElementById("successSubtitle").textContent = "已通过移动端扫码登录";
+      document.getElementById("mobileResultTitle").textContent = "Mac 端登录成功";
+      document.getElementById("mobileResultDesc").textContent = "已完成本次扫码登录";
       setPlatforms("bound");
 
       if (type === "wait") {
         showPhonePage("mine");
         document.getElementById("macTitle").textContent = "扫码登录";
-        document.getElementById("macSubtitle").textContent = "使用盖世游戏 App 扫一扫";
+        document.getElementById("macSubtitle").textContent = "";
         document.getElementById("stateTitle").textContent = "等待手机扫一扫";
         document.getElementById("stateDesc").textContent = "";
       }
       if (type === "scanning") {
         showPhonePage("scan");
         document.getElementById("macTitle").textContent = "扫码登录";
-        document.getElementById("macSubtitle").textContent = "使用盖世游戏 App 扫一扫";
+        document.getElementById("macSubtitle").textContent = "";
+        document.getElementById("stateTitle").textContent = "等待手机扫一扫";
+        document.getElementById("stateDesc").textContent = "";
+      }
+      if (type === "permissionDenied") {
+        showPhonePage("mine");
+        phone.classList.add("permission-denied-state");
+        document.getElementById("macTitle").textContent = "扫码登录";
+        document.getElementById("macSubtitle").textContent = "";
         document.getElementById("stateTitle").textContent = "等待手机扫一扫";
         document.getElementById("stateDesc").textContent = "";
       }
@@ -2113,38 +2477,40 @@
         document.getElementById("macTitle").textContent = "等待手机确认";
         document.getElementById("macSubtitle").textContent = "请在盖世游戏 App 完成本次登录确认";
         document.getElementById("stateTitle").textContent = "等待手机确认登录";
-        document.getElementById("stateDesc").textContent = "确认后 Mac 端将自动登录。";
+        document.getElementById("stateDesc").textContent = "请尽快在手机上确认";
       }
       if (type === "expired") {
         showPhonePage("mine");
+        loginSurface.classList.add("expired-state");
         qrShell.classList.add("invalid");
         qrShell.setAttribute("tabindex", "0");
         document.getElementById("stateDot").className = "state-dot fail";
         document.getElementById("macTitle").textContent = "二维码已过期";
-        document.getElementById("macSubtitle").textContent = "刷新后重新扫码";
+        document.getElementById("macSubtitle").textContent = "";
         document.getElementById("stateTitle").textContent = "二维码已过期";
         document.getElementById("stateDesc").textContent = "";
       }
-      if (type === "success" || type === "unbound") {
+      if (type === "cancelled") {
+        showPhonePage("mine");
+        loginSurface.classList.add("expired-state", "cancelled-state");
+        qrShell.classList.add("invalid");
+        qrShell.setAttribute("tabindex", "0");
+        document.getElementById("stateDot").className = "state-dot fail";
+        document.getElementById("macTitle").textContent = "本次登录已取消";
+        document.getElementById("macSubtitle").textContent = "";
+        document.getElementById("stateTitle").textContent = "本次登录已取消，请刷新二维码";
+        document.getElementById("stateDesc").textContent = "";
+      }
+      if (type === "success") {
         qrView.classList.add("hidden");
         phoneLoginView.classList.remove("show");
         accountView.classList.add("show");
         loginSurface.classList.add("account-state");
         showPhonePage("result");
-        if (type === "success") {
-          setPlatforms("bound");
-          document.getElementById("successTitle").textContent = "欢迎回来";
-          document.getElementById("successSubtitle").textContent = "已通过移动端扫码登录";
-          document.getElementById("mobileResultTitle").textContent = "Mac 端登录成功";
-          document.getElementById("mobileResultDesc").textContent = "已完成本次扫码登录";
-        } else {
-          setPlatforms("none");
-          loginSurface.classList.add("unbound-state");
-          document.getElementById("successTitle").textContent = "盖世账号登录成功";
-          document.getElementById("successSubtitle").textContent = "已通过移动端扫码登录";
-          document.getElementById("mobileResultTitle").textContent = "Mac 端登录成功";
-          document.getElementById("mobileResultDesc").textContent = "已完成本次扫码登录";
-        }
+        document.getElementById("successTitle").textContent = "欢迎回来";
+        document.getElementById("successSubtitle").textContent = "已通过移动端扫码登录";
+        document.getElementById("mobileResultTitle").textContent = "Mac 端登录成功";
+        document.getElementById("mobileResultDesc").textContent = "已完成本次扫码登录";
       }
       renderDetail(type);
     }
@@ -2176,8 +2542,13 @@
     });
     document.getElementById("backBtn").addEventListener("click", function() { setScenario("wait"); });
     document.getElementById("simulateBtn").addEventListener("click", function() { setScenario("confirm"); });
+    document.getElementById("permissionCancelBtn").addEventListener("click", function() { setScenario("wait"); });
+    document.getElementById("permissionSettingsBtn").addEventListener("click", function() {
+      toast("请在系统设置中开启摄像头权限");
+    });
     document.getElementById("confirmLoginBtn").addEventListener("click", function() { setScenario("success"); });
-    document.getElementById("cancelLoginBtn").addEventListener("click", function() { setScenario("wait"); });
+    document.getElementById("cancelLoginBtn").addEventListener("click", function() { setScenario("cancelled"); });
+    document.getElementById("refreshQrBtn").addEventListener("click", function() { setScenario("wait"); });
     qrShell.addEventListener("click", function() { if (qrShell.classList.contains("invalid")) setScenario("wait"); });
     qrShell.addEventListener("keydown", function(event) {
       if (qrShell.classList.contains("invalid") && (event.key === "Enter" || event.key === " ")) {
@@ -2187,9 +2558,6 @@
     });
     document.getElementById("downloadBtn").addEventListener("click", function() { toast("下载管理"); });
     document.getElementById("settingsBtn").addEventListener("click", function() { toast("设置"); });
-    qrMethodBtn.addEventListener("click", function() { showLoginMethod("qr"); });
-    phoneMethodBtn.addEventListener("click", function() { showLoginMethod("phone"); });
-    document.getElementById("codeBtn").addEventListener("click", function() { toast("验证码已发送"); });
     document.getElementById("phoneForm").addEventListener("submit", function(event) {
       event.preventDefault();
       setScenario("success");
@@ -2201,7 +2569,8 @@
       }
     });
     drawQr();
-    setScenario("wait");
+    const initialScenario = new URLSearchParams(window.location.search).get("state");
+    setScenario(stateLabels[initialScenario] ? initialScenario : "wait");
   </script>
 </body>
 </html>
