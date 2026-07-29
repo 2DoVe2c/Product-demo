@@ -5,28 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Product Demo 预览目录</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #172033;
       background: #f6f7fb;
     }
+
     main {
       width: min(960px, calc(100% - 32px));
       margin: 40px auto;
     }
+
+    header {
+      margin-bottom: 24px;
+    }
+
     h1 {
       margin: 0 0 8px;
       font-size: 28px;
       line-height: 1.25;
     }
+
     .meta {
       margin: 0;
       color: #667085;
       font-size: 14px;
     }
-    .toolbar { margin: 24px 0; }
+
+    .toolbar {
+      margin: 24px 0;
+    }
+
     #search {
       width: 100%;
       height: 44px;
@@ -38,10 +52,12 @@
       font-size: 15px;
       outline: none;
     }
+
     #search:focus {
       border-color: #2f6fed;
       box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.14);
     }
+
     .month-group {
       margin: 14px 0;
       border: 1px solid #e4e7ec;
@@ -49,6 +65,7 @@
       background: #fff;
       overflow: hidden;
     }
+
     summary {
       display: flex;
       align-items: center;
@@ -59,17 +76,20 @@
       font-weight: 700;
       user-select: none;
     }
+
     summary em {
       color: #667085;
       font-size: 13px;
       font-style: normal;
       font-weight: 500;
     }
+
     ul {
       list-style: none;
       margin: 0;
       padding: 0 18px 12px;
     }
+
     .demo-item {
       display: flex;
       align-items: center;
@@ -78,6 +98,7 @@
       padding: 12px 0;
       border-top: 1px solid #eef0f4;
     }
+
     .demo-item a {
       min-width: 0;
       color: #175cd3;
@@ -85,12 +106,17 @@
       text-decoration: none;
       overflow-wrap: anywhere;
     }
-    .demo-item a:hover { text-decoration: underline; }
+
+    .demo-item a:hover {
+      text-decoration: underline;
+    }
+
     .demo-item span {
       flex: 0 0 auto;
       color: #667085;
       font-size: 13px;
     }
+
     .empty {
       padding: 24px;
       border: 1px solid #e4e7ec;
@@ -98,13 +124,26 @@
       background: #fff;
       color: #667085;
     }
+
+    @media (max-width: 640px) {
+      main {
+        width: min(100% - 24px, 960px);
+        margin: 24px auto;
+      }
+
+      .demo-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+    }
   </style>
 </head>
 <body>
   <main>
     <header>
       <h1>Product Demo 预览目录</h1>
-      <p class="meta">共 3 个 demo，按上传月份自动归档。</p>
+      <p class="meta">共 3 个 demo，按最后上传月份自动归档。</p>
     </header>
 
     <div class="toolbar">
@@ -116,33 +155,23 @@
       <details class="month-group" open>
         <summary>
           <span>2026 年 7 月</span>
-          <em>2 个 demo</em>
+          <em>3 个 demo</em>
         </summary>
         <ul>
           
           <li class="demo-item" data-title="扫码登录mac端交互标注版demo">
-            <a href="./%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95Mac%E7%AB%AF%E4%BA%A4%E4%BA%92%E6%A0%87%E6%B3%A8%E7%89%88demo.html" target="_blank" rel="noopener">扫码登录Mac端交互标注版demo</a>
-            <span>2026-07-21</span>
+            <a href="./%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95Mac%E7%AB%AF%E4%BA%A4%E4%BA%92%E6%A0%87%E6%B3%A8%E7%89%88demo.html?v=1785307373" target="_blank" rel="noopener">扫码登录Mac端交互标注版demo</a>
+            <span>上传：2026-07-29 06:42</span>
+          </li>
+        
+          <li class="demo-item" data-title="启动失败引导demo">
+            <a href="./%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E5%BC%95%E5%AF%BCdemo.html?v=1782972657" target="_blank" rel="noopener">启动失败引导demo</a>
+            <span>上传：2026-07-02 06:10</span>
           </li>
         
           <li class="demo-item" data-title="兼容性治理b端demo">
-            <a href="./%E5%85%BC%E5%AE%B9%E6%80%A7%E6%B2%BB%E7%90%86B%E7%AB%AFdemo.html" target="_blank" rel="noopener">兼容性治理B端demo</a>
-            <span>2026-07-02</span>
-          </li>
-        
-        </ul>
-      </details>
-    
-      <details class="month-group">
-        <summary>
-          <span>2026 年 6 月</span>
-          <em>1 个 demo</em>
-        </summary>
-        <ul>
-          
-          <li class="demo-item" data-title="启动失败引导demo">
-            <a href="./%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E5%BC%95%E5%AF%BCdemo.html" target="_blank" rel="noopener">启动失败引导demo</a>
-            <span>2026-06-22</span>
+            <a href="./%E5%85%BC%E5%AE%B9%E6%80%A7%E6%B2%BB%E7%90%86B%E7%AB%AFdemo.html?v=1782972657" target="_blank" rel="noopener">兼容性治理B端demo</a>
+            <span>上传：2026-07-02 06:10</span>
           </li>
         
         </ul>
@@ -171,8 +200,13 @@
 
         group.hidden = visibleCount === 0;
 
-        if (keyword && visibleCount > 0) group.open = true;
-        if (!keyword) group.open = group === groups[0];
+        if (keyword && visibleCount > 0) {
+          group.open = true;
+        }
+
+        if (!keyword) {
+          group.open = group === groups[0];
+        }
       });
     });
   </script>
